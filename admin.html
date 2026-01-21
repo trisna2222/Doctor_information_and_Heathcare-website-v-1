@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Medicoz</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/admin.css">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="admin-header">
+        <a href="index.html" class="admin-brand">Medicoz Admin</a>
+        <a href="index.html" class="btn btn-primary"
+            style="background-color: transparent; color: var(--primary-color); border: 1px solid var(--primary-color);">View
+            Website</a>
+    </header>
+
+    <!-- Main Content -->
+    <main class="admin-container">
+        <!-- Tab Navigation -->
+        <div class="admin-tabs" style="margin-bottom: 2rem;">
+            <button class="tab-btn active" data-tab="doctors">Doctors Management</button>
+            <button class="tab-btn" data-tab="blogs">Blog Management</button>
+        </div>
+
+        <!-- Doctors Tab -->
+        <div id="doctors-tab" class="tab-content active">
+            <div class="admin-action-bar">
+                <h2>Doctors Management</h2>
+                <button id="add-doctor-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Add New Doctor</button>
+            </div>
+
+            <!-- Doctors Table -->
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="doctors-table-body">
+                    <!-- Javascript will populate this -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Blogs Tab -->
+        <div id="blogs-tab" class="tab-content" style="display: none;">
+            <div class="admin-action-bar">
+                <h2>Blog Management</h2>
+                <button id="add-blog-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Add New Post</button>
+            </div>
+
+            <!-- Blogs Table -->
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="blogs-table-body">
+                    <!-- Javascript will populate this -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Add/Edit Modal (Doctors) -->
+    <div class="modal-overlay" id="doctor-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Add New Doctor</h3>
+                <button class="close-modal" id="close-modal">&times;</button>
+            </div>
+            <form id="doctor-form">
+                <input type="hidden" id="doctor-id">
+
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="name" class="form-control" required placeholder="e.g. Dr. Adiba Jannat Zara">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Department</label>
+                    <select id="department" class="form-control" required>
+                        <option value="Cardiology">Cardiology</option>
+                        <option value="Neurology">Neurology</option>
+                        <option value="Orthopedics">Orthopedics</option>
+                        <option value="Gynecology">Gynecology</option>
+                        <option value="Pediatrics">Pediatrics</option>
+                        <option value="Dermatology">Dermatology</option>
+                        <option value="Surgery">General Surgery</option>
+                        <option value="Internal Medicine">Internal Medicine</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Role / Designation</label>
+                    <input type="text" id="role" class="form-control" required placeholder="e.g. Cardiologist">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Qualification</label>
+                    <input type="text" id="qualification" class="form-control" placeholder="e.g. MBBS, FCPS">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Consultation Fee (BDT)</label>
+                    <input type="number" id="fee" class="form-control" placeholder="e.g. 1000">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Image Path</label>
+                    <input type="text" id="image" class="form-control" placeholder="e.g. img/team-1.jpg"
+                        value="img/default-doctor.jpg">
+                    <small style="color: #777;">Enter relative path to image.</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Bio / Description</label>
+                    <textarea id="bio" class="form-control" rows="4"
+                        placeholder="Short description about the doctor..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Schedule / Visiting Hours</label>
+                    <input type="text" id="schedule" class="form-control" placeholder="e.g. Mon, Wed: 5PM - 8PM">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Doctor</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal (Blogs) -->
+    <div class="modal-overlay" id="blog-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="blog-modal-title">Add New Post</h3>
+                <button class="close-modal" id="close-blog-modal">&times;</button>
+            </div>
+            <form id="blog-form">
+                <input type="hidden" id="blog-id">
+
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" id="blog-title" class="form-control" required placeholder="Enter blog title">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Image Path</label>
+                    <input type="text" id="blog-image" class="form-control" placeholder="e.g. img/blog1.png" required>
+                    <small style="color: #777;">Enter relative path to image.</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Except (Short Summary)</label>
+                    <textarea id="blog-excerpt" class="form-control" rows="3" required
+                        placeholder="Short summary for the card view..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Content (HTML allowed)</label>
+                    <textarea id="blog-content" class="form-control" rows="10" required
+                        placeholder="Full content of the blog post..."></textarea>
+                    <small style="color: #777;">You can use HTML tags like &lt;p&gt;, &lt;h3&gt;, etc.</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Post</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Logic -->
+    <script src="js/doctor-data.js"></script>
+    <script src="js/doctors.js"></script>
+    <script src="js/blog-data.js"></script>
+    <script src="js/blog-manager.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

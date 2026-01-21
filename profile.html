@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>My Profile - Medicoz</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+
+    <!-- Main Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 4rem auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-header-bg {
+            background: var(--bs-primary);
+            height: 150px;
+            position: relative;
+        }
+
+        .profile-avatar-container {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #fff;
+            padding: 5px;
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #ccc;
+        }
+
+        .profile-body {
+            padding: 5rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .profile-email {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .profile-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            text-align: left;
+            margin-top: 2rem;
+            border-top: 1px solid #eee;
+            padding-top: 2rem;
+        }
+
+        .detail-item {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .profile-actions {
+            margin-top: 3rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            padding: 10px 25px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .edit-btn {
+            background: var(--bs-primary);
+            color: #fff;
+            border: none;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+        }
+
+        .appointment-history {
+            margin-top: 4rem;
+            text-align: left;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .history-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .empty-state {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            padding: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="top-bar-inner">
+            <div class="top-info-list">
+                <div class="top-info-item"><i class="fas fa-map-marker-alt"></i> Uttara, Dhaka</div>
+                <div class="top-info-item"><i class="fas fa-phone-alt"></i> +881300570555</div>
+                <div class="top-info-item"><i class="fas fa-envelope"></i> trisna.cse@gmail.com</div>
+            </div>
+            <div class="top-social-list">
+                <a href="#" class="social-icon-btn"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon-btn"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-icon-btn"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon-btn"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <header class="site-header">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <img src="img/logo.png" alt="Logo">
+            </a>
+            <input type="checkbox" id="nav-toggle" style="display:none;">
+            <label for="nav-toggle" class="mobile-menu-toggle"><i class="fa fa-bars"></i></label>
+            <div class="nav-menu">
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link-item">Home</a>
+                    <a href="team.html" class="nav-link-item">Doctors</a>
+                    <a href="service.html" class="nav-link-item">Departments</a>
+                    <a href="about.html" class="nav-link-item">About</a>
+                    <a href="blog.html" class="nav-link-item">Blog</a>
+                    <a href="contact.html" class="nav-link-item">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="content-container">
+            <h1 class="page-title">My Profile</h1>
+            <div class="breadcrumb-nav">
+                <a href="index.html" class="breadcrumb-link">Home</a>
+                <span class="breadcrumb-separator">/</span>
+                <span class="breadcrumb-current">Profile</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Section -->
+    <div class="section-wrapper" style="background: #f8f9fa;">
+
+        <div class="profile-container">
+            <div class="profile-header-bg">
+                <div class="profile-avatar-container">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-body">
+                <h2 class="profile-name" id="user-name">Loading...</h2>
+                <div class="profile-email" id="user-email">...</div>
+
+                <div class="profile-details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Joined On</span>
+                        <div class="detail-value" id="user-joined">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Phone</span>
+                        <div class="detail-value">Not Added</div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Total Appointments</span>
+                        <div class="detail-value">0</div>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <button class="action-btn edit-btn" onclick="alert('Edit profile feature coming soon!')">Edit
+                        Profile</button>
+                    <button class="action-btn logout-btn" onclick="logoutUser()">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="appointment-history">
+            <h3 class="history-title">Appointment History</h3>
+            <div class="empty-state">
+                <p>You haven't booked any appointments yet.</p>
+                <a href="appointment.html" class="service-btn" style="margin-top: 1rem; display: inline-block;">Book
+                    Now</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Semantic Footer -->
+    <footer class="site-footer">
+        <div class="content-container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <img src="img/logo.png" class="footer-logo" alt="Logo">
+                    <p>Comprehensive medical departments providing specialized care across multiple healthcare services.
+                    </p>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <a href="about.html" class="footer-link"><i class="fas fa-angle-right"></i> About Us</a>
+                    <a href="contact.html" class="footer-link"><i class="fas fa-angle-right"></i> Contact Us</a>
+                    <a href="#" class="footer-link"><i class="fas fa-angle-right"></i> Privacy Policy</a>
+                    <a href="#" class="footer-link"><i class="fas fa-angle-right"></i> Terms & Conditions</a>
+                    <a href="blog.html" class="footer-link"><i class="fas fa-angle-right"></i> Our Blog</a>
+                    <a href="team.html" class="footer-link"><i class="fas fa-angle-right"></i> Our Team</a>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-heading">Services</h4>
+                    <a href="#" class="footer-link"><i class="fas fa-angle-right"></i> All Services</a>
+                    <a href="#" class="footer-link"><i class="fas fa-angle-right"></i> Doctor Consultation</a>
+                    <a href="#" class="footer-link"><i class="fas fa-angle-right"></i> Diagnostics</a>
+                    <a href="#" class="footer-link"><i class="fas fa-angle-right"></i> Manual Treatment</a>
+                    <a href="#" class="footer-link"><i class="fas fa-angle-right"></i> Emergency Care</a>
+                    <a href="#" class="footer-link"><i class="fas fa-angle-right"></i> Home Healthcare</a>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-heading">Contact Info</h4>
+                    <div class="footer-link"><i class="fa fa-map-marker-alt"></i> Uttara, Dhaka</div>
+                    <div class="footer-link"><i class="fas fa-envelope"></i> trisna.cse@gmail.com</div>
+                    <div class="footer-link"><i class="fas fa-phone"></i> +8801300570555</div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="text-white">
+                    <i class="fas fa-copyright text-light me-2"></i> Medicoz, All right reserved.
+                </div>
+                <div class="text-white">
+                    Designed By <a class="text-white border-bottom" href="#">Trisna</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // Profile logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY));
+
+            if (!user) {
+                // Redirect if not logged in
+                window.location.href = 'login.html';
+                return;
+            }
+
+            document.getElementById('user-name').textContent = user.name;
+            document.getElementById('user-email').textContent = user.email;
+
+            if (user.joined) {
+                const date = new Date(user.joined);
+                document.getElementById('user-joined').textContent = date.toLocaleDateString();
+            }
+        });
+    </script>
+</body>
+
+</html>
