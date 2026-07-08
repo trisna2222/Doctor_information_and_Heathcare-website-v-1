@@ -3,6 +3,8 @@ const router = express.Router();
 const Doctor = require('../models/Doctor');
 const Appointment = require('../models/Appointment');
 const Review = require('../models/Review');
+const Department = require('../models/Department');
+const User = require('../models/User');
 
 // Get all doctors
 router.get('/doctors', async (req, res) => {
@@ -248,6 +250,188 @@ router.get('/reviews/doctor/:doctorId', async (req, res) => {
             averageRating: Number(averageRating),
             totalReviews: reviews.length
         });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+const Message = require('../models/Message');
+
+// ===================================
+// CONTACT MESSAGES ENDPOINTS
+// ===================================
+
+// Submit a contact message
+router.post('/messages', async (req, res) => {
+    try {
+        const { name, email, phone, project, subject, message } = req.body;
+        if (!name || !email || !subject || !message) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
+        const newMessage = new Message({ name, email, phone, project, subject, message });
+        await newMessage.save();
+        res.status(201).json(newMessage);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// Get all contact messages (Admin)
+router.get('/messages', async (req, res) => {
+    try {
+        const messages = await Message.find().sort({ createdAt: -1 });
+        res.json(messages);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Delete a message (Admin)
+router.delete('/messages/:id', async (req, res) => {
+    try {
+        await Message.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Message deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// ===================================
+// DEPARTMENTS ENDPOINTS
+// ===================================
+
+// Get all departments
+router.get('/departments', async (req, res) => {
+    try {
+        const departments = await Department.find().sort({ name: 1 });
+        res.json(departments);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Add a department
+router.post('/departments', async (req, res) => {
+    const department = new Department(req.body);
+    try {
+        const newDepartment = await department.save();
+        res.status(201).json(newDepartment);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// Update a department
+router.put('/departments/:id', async (req, res) => {
+    try {
+        const updatedDepartment = await Department.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true }
+        );
+        res.json(updatedDepartment);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// Delete a department
+router.delete('/departments/:id', async (req, res) => {
+    try {
+        await Department.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Department deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// ===================================
+// COMMENTS ENDPOINTS
+// ===================================
+const Comment = require('../models/Comment');
+
+// Submit a comment
+router.post('/comments', async (req, res) => {
+    try {
+        const { blogId, blogTitle, userId, userName, userEmail, commentText } = req.body;
+
+        if (!blogId || !blogTitle || !userName || !userEmail || !commentText) {
+            return res.status(400).json({ message: 'Missing required comment fields' });
+        }
+
+        const comment = new Comment({
+            blogId,
+            blogTitle,
+            userId: userId || null,
+            userName,
+            userEmail,
+            commentText,
+            status: 'pending' // Default initially
+        });
+
+        const newComment = await comment.save();
+        res.status(201).json(newComment);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// Get approved comments for a specific blog post
+router.get('/comments/blog/:blogId', async (req, res) => {
+    try {
+        const comments = await Comment.find({ blogId: req.params.blogId, status: 'approved' })
+            .populate('userId', 'profilePicture')
+            .sort({ createdAt: -1 });
+        res.json(comments);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Get all comments for Admin panel
+router.get('/comments', async (req, res) => {
+    try {
+        const comments = await Comment.find()
+            .populate('userId', 'profilePicture')
+            .sort({ createdAt: -1 });
+        res.json(comments);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Update comment status (approve/reject)
+router.put('/comments/:id/status', async (req, res) => {
+    try {
+        const { status } = req.body;
+        if (!status || !['pending', 'approved', 'rejected'].includes(status)) {
+            return res.status(400).json({ message: 'Invalid or missing status value' });
+        }
+
+        const updatedComment = await Comment.findByIdAndUpdate(
+            req.params.id,
+            { $set: { status } },
+            { new: true }
+        );
+
+        if (!updatedComment) {
+            return res.status(404).json({ message: 'Comment not found' });
+        }
+
+        res.json(updatedComment);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// Delete a comment
+router.delete('/comments/:id', async (req, res) => {
+    try {
+        const deletedComment = await Comment.findByIdAndDelete(req.params.id);
+        if (!deletedComment) {
+            return res.status(404).json({ message: 'Comment not found' });
+        }
+        res.json({ message: 'Comment deleted successfully' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

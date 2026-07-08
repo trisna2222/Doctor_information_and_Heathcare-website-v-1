@@ -1313,7 +1313,78 @@ img {
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.dept-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--bs-primary);
+    color: #ffffff;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(19, 197, 221, 0.3);
+    z-index: 2;
+    text-transform: uppercase;
+}
+
+.team-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin: 1.25rem 0;
+    text-align: left;
+    font-size: 0.85rem;
+    border-top: 1px dashed #e2e8f0;
+    border-bottom: 1px dashed #e2e8f0;
+    padding: 1rem 0;
+    width: 100%;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #64748b;
+    overflow: hidden;
+}
+
+.detail-item i {
+    color: var(--bs-primary);
+    width: 16px;
+    text-align: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.detail-item span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.detail-item.full-width {
+    grid-column: span 2;
+}
+
+.detail-item.full-width span {
+    white-space: normal;
+}
+
+.team-bio-short {
+    font-size: 0.85rem;
+    color: #64748b;
+    line-height: 1.5;
+    text-align: left;
+    margin-bottom: 1.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 2.6em;
 }
 
 .team-card-actions {
@@ -1861,6 +1932,13 @@ img {
     font-weight: 700;
 }
 
+.alphabet-item a.active {
+    color: var(--bs-primary);
+    font-weight: 700;
+    border-bottom: 2px solid var(--bs-primary);
+    padding-bottom: 2px;
+}
+
 .search-field-icon {
     position: relative;
 }
@@ -2403,4 +2481,113 @@ img {
 
 .testi-dot:hover {
     background-color: #fff;
+}
+
+/* --- Blog Comments Section Styles --- */
+.comments-section {
+    margin-top: 3.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.comment-item {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.comment-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+    border-color: var(--bs-primary);
+}
+
+.comment-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--bs-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--bs-dark);
+    border: 2px solid #e2e8f0;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    text-transform: uppercase;
+}
+
+.comment-content {
+    flex: 1;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.comment-author {
+    font-weight: 600;
+    color: var(--bs-dark);
+    font-size: 1rem;
+}
+
+.comment-date {
+    font-size: 0.8rem;
+    color: #888888;
+}
+
+.comment-text {
+    font-size: 0.95rem;
+    color: #4a5568;
+    line-height: 1.6;
+    margin: 0;
+    white-space: pre-line;
+}
+
+.add-comment-wrapper {
+    background: var(--bs-light);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    margin-top: 3rem;
+}
+
+.add-comment-wrapper h4 {
+    color: var(--bs-dark);
+    font-weight: 700;
+}
+
+.comment-status-msg {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    display: none;
+}
+
+.comment-status-msg.success {
+    display: block;
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.comment-status-msg.error {
+    display: block;
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
 }

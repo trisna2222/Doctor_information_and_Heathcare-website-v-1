@@ -27,6 +27,10 @@
                     <i class="fas fa-user-md"></i>
                     <span>Doctors Management</span>
                 </button>
+                <button class="nav-item tab-btn" data-tab="departments">
+                    <i class="fas fa-hospital"></i>
+                    <span>Departments Management</span>
+                </button>
                 <button class="nav-item tab-btn" data-tab="blogs">
                     <i class="fas fa-file-alt"></i>
                     <span>Blog Management</span>
@@ -42,6 +46,14 @@
                 <button class="nav-item tab-btn" data-tab="appointments">
                     <i class="fas fa-calendar-check"></i>
                     <span>Appointments</span>
+                </button>
+                <button class="nav-item tab-btn" data-tab="messages">
+                    <i class="fas fa-envelope"></i>
+                    <span>Contact Messages</span>
+                </button>
+                <button class="nav-item tab-btn" data-tab="comments">
+                    <i class="fas fa-comments"></i>
+                    <span>Comment Moderation</span>
                 </button>
             </nav>
             <div class="sidebar-footer">
@@ -68,7 +80,8 @@
                     <div class="action-bar">
                         <div class="search-box">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="doctor-search-input" placeholder="Search doctors by name, department or role...">
+                            <input type="text" id="doctor-search-input"
+                                placeholder="Search doctors by name, department or role...">
                         </div>
                         <button id="add-doctor-btn" class="btn btn-primary">
                             <i class="fas fa-plus"></i> Add New Doctor
@@ -80,12 +93,41 @@
                     </div>
                 </div>
 
+                <!-- Departments Tab -->
+                <div id="departments-tab" class="tab-content" style="display: none;">
+                    <div class="action-bar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="department-search-input" placeholder="Search departments...">
+                        </div>
+                        <button id="add-department-btn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add New Department
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Department</th>
+                                    <th>Icon</th>
+                                    <th>Description & Services</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="departments-table-body">
+                                <!-- Javascript will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- Blogs Tab -->
                 <div id="blogs-tab" class="tab-content" style="display: none;">
                     <div class="action-bar">
                         <div class="search-box">
                             <i class="fas fa-search"></i>
-                            <input type="text" placeholder="Search posts...">
+                            <input type="text" id="blog-search-input" placeholder="Search posts...">
                         </div>
                         <button id="add-blog-btn" class="btn btn-primary">
                             <i class="fas fa-plus"></i> Add New Post
@@ -141,7 +183,8 @@
                     <div class="action-bar">
                         <div class="search-box">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="application-search-input" placeholder="Search applications by name or email...">
+                            <input type="text" id="application-search-input"
+                                placeholder="Search applications by name or email...">
                         </div>
                     </div>
 
@@ -170,7 +213,8 @@
                     <div class="action-bar">
                         <div class="search-box">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="appointment-search-input" placeholder="Search appointments by patient, doctor or comments...">
+                            <input type="text" id="appointment-search-input"
+                                placeholder="Search appointments by patient, doctor or comments...">
                         </div>
                     </div>
 
@@ -188,6 +232,63 @@
                                 </tr>
                             </thead>
                             <tbody id="appointments-table-body">
+                                <!-- Javascript will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Messages Tab -->
+                <div id="messages-tab" class="tab-content" style="display: none;">
+                    <div class="action-bar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="message-search-input"
+                                placeholder="Search messages by name, email, subject or message content...">
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Sender</th>
+                                    <th>Contact Info</th>
+                                    <th>Subject & Message</th>
+                                    <th>Submitted Date</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="messages-table-body">
+                                <!-- Javascript will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Comments Tab -->
+                <div id="comments-tab" class="tab-content" style="display: none;">
+                    <div class="action-bar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="comment-search-input"
+                                placeholder="Search comments by commenter, blog, or text...">
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Commenter</th>
+                                    <th>Blog Post</th>
+                                    <th>Comment Content</th>
+                                    <th>Submitted Date</th>
+                                    <th>Status</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comments-table-body">
                                 <!-- Javascript will populate this -->
                             </tbody>
                         </table>
@@ -244,12 +345,17 @@
                 <div class="form-group">
                     <label class="form-label">Doctor Image</label>
                     <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 10px;">
-                        <div id="doctor-preview-container" style="width: 70px; height: 70px; border-radius: 50%; border: 1px solid var(--border-color); overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--bg-color); flex-shrink: 0;">
-                            <img id="doctor-image-preview" src="img/default-doctor.jpg" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='img/default-doctor.jpg'">
+                        <div id="doctor-preview-container"
+                            style="width: 70px; height: 70px; border-radius: 50%; border: 1px solid var(--border-color); overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--bg-color); flex-shrink: 0;">
+                            <img id="doctor-image-preview" src="img/default-doctor.jpg"
+                                style="width: 100%; height: 100%; object-fit: cover;"
+                                onerror="this.src='img/default-doctor.jpg'">
                         </div>
                         <div style="flex: 1;">
-                            <input type="file" id="doctor-image-file" accept="image/*" class="form-control" style="padding: 6px 12px; font-size: 0.85rem;">
-                            <span class="help-text" style="display: block; margin-top: 4px;">Choose an image file to upload (Max 2MB).</span>
+                            <input type="file" id="doctor-image-file" accept="image/*" class="form-control"
+                                style="padding: 6px 12px; font-size: 0.85rem;">
+                            <span class="help-text" style="display: block; margin-top: 4px;">Choose an image file to
+                                upload (Max 2MB).</span>
                         </div>
                     </div>
                     <input type="hidden" id="image" value="img/default-doctor.jpg">
@@ -257,7 +363,8 @@
 
                 <div class="form-group">
                     <label class="form-label">Bio / Description</label>
-                    <textarea id="bio" class="form-control" placeholder="Short description about the doctor..."></textarea>
+                    <textarea id="bio" class="form-control"
+                        placeholder="Short description about the doctor..."></textarea>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 0;">
@@ -313,11 +420,61 @@
         </form>
     </div>
 
+    <!-- Add/Edit Modal (Departments) -->
+    <div class="modal-overlay" id="department-modal">
+        <form id="department-form" class="modal-content">
+            <div class="modal-header">
+                <h3 id="department-modal-title">Add New Department</h3>
+                <button type="button" class="close-modal" id="close-department-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="department-id">
+
+                <div class="form-group">
+                    <label class="form-label">Department Name</label>
+                    <input type="text" id="department-name" class="form-control" required placeholder="e.g. Cardiology">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Icon Class (FontAwesome)</label>
+                    <input type="text" id="department-icon" class="form-control" placeholder="e.g. fas fa-heartbeat"
+                        required>
+                    <span class="help-text">Choose a FontAwesome class (e.g. fas fa-brain, fas fa-bone, etc.).</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Image Path</label>
+                    <input type="text" id="department-image" class="form-control" placeholder="e.g. img/Cardiology.png"
+                        required>
+                    <span class="help-text">Enter relative path to image.</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="department-description" class="form-control" style="min-height: 70px" required
+                        placeholder="Short description of the department..."></textarea>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Services (Comma-separated)</label>
+                    <textarea id="department-services" class="form-control" style="min-height: 80px" required
+                        placeholder="e.g. Cardiac Consultations, ECG & Echocardiography, Interventional Cardiology"></textarea>
+                    <span class="help-text">Enter the services provided, separated by commas.</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-edit" id="cancel-department">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Department</button>
+            </div>
+        </form>
+    </div>
+
     <!-- Logic -->
     <script src="js/doctor-data.js"></script>
     <script src="js/doctors.js"></script>
     <script src="js/blog-data.js"></script>
     <script src="js/blog-manager.js"></script>
+    <script src="js/departments.js"></script>
     <script src="js/admin.js"></script>
 </body>
 

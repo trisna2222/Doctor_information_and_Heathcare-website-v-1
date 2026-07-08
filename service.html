@@ -91,110 +91,8 @@
                 </p>
             </div>
 
-            <div class="services-grid">
-                <!-- Service Item 1 -->
-                <div class="service-card">
-                    <div class="service-image-box">
-                        <img src="img/Cardiology.png" alt="Cardiology">
-                    </div>
-                    <div class="service-content">
-                        <h5 class="service-title">Cardiology</h5>
-                        <p class="service-desc">Focuses on the diagnosis and treatment of heart-related diseases,
-                            including high blood pressure, heart attacks, and rhythm </p>
-                        <a href="Departments/Cardiology.html" class="service-btn">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Service Item 2 -->
-                <div class="service-card">
-                    <div class="service-image-box">
-                        <img src="img/Neurology.png" alt="Neurology">
-                    </div>
-                    <div class="service-content">
-                        <h5 class="service-title">Neurology</h5>
-                        <p class="service-desc">Deals with disorders of the brain, spinal cord, and nervous system such
-                            as stroke, epilepsy, and migraine.</p>
-                        <a href="Departments/Neurology.html" class="service-btn">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Service Item 3 -->
-                <div class="service-card">
-                    <div class="service-image-box">
-                        <img src="img/Orthopedics.png" alt="Orthopedics">
-                    </div>
-                    <div class="service-content">
-                        <h5 class="service-title">Orthopedics</h5>
-                        <p class="service-desc">Specializes in bones, joints, muscles, and ligaments, treating
-                            fractures, arthritis, and sports injuries.</p>
-                        <a href="Departments/Orthopedics.html" class="service-btn">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Service Item 4 -->
-                <div class="service-card">
-                    <div class="service-image-box">
-                        <img src="img/Pediatrics.png" alt="Pediatrics">
-                    </div>
-                    <div class="service-content">
-                        <h5 class="service-title">Pediatrics</h5>
-                        <p class="service-desc">Provides medical care for infants, children, and adolescents, ensuring
-                            healthy growth and development in pediatrics </p>
-                        <a href="Departments/Pediatrics.html" class="service-btn">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Service Item 5 -->
-                <div class="service-card">
-                    <div class="service-image-box">
-                        <img src="img/Gynecology & Obstetrics.png" alt="Gynecology">
-                    </div>
-                    <div class="service-content">
-                        <h5 class="service-title">Gynecology & Obstetrics</h5>
-                        <p class="service-desc">Focuses on women’s reproductive health, pregnancy care, childbirth, and
-                            postnatal services gynocology & obsetrices .</p>
-                        <a href="Departments/Gynecology.html" class="service-btn">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Service Item 6 -->
-                <div class="service-card">
-                    <div class="service-image-box">
-                        <img src="img/Dermatology.png" alt="Dermatology">
-                    </div>
-                    <div class="service-content">
-                        <h5 class="service-title">Dermatology</h5>
-                        <p class="service-desc">Treats skin, hair, and nail conditions including acne, eczema,
-                            infections, and allergies occurs in dermatology</p>
-                        <a href="Departments/Dermatology.html" class="service-btn">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Service Item 7 -->
-                <div class="service-card">
-                    <div class="service-image-box">
-                        <img src="img/General surgery.png" alt="General Surgery">
-                    </div>
-                    <div class="service-content">
-                        <h5 class="service-title">General Surgery</h5>
-                        <p class="service-desc">Performs surgical procedures for conditions involving the abdomen,
-                            digestive system, and soft tissues General Surgery.</p>
-                        <a href="Departments/General_Surgery.html" class="service-btn">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Service Item 8 -->
-                <div class="service-card">
-                    <div class="service-image-box">
-                        <img src="img/Internal Medicine.png" alt="Internal Medicine">
-                    </div>
-                    <div class="service-content">
-                        <h5 class="service-title">Internal Medicine</h5>
-                        <p class="service-desc">Manages adult diseases such as diabetes, hypertension, infections, and
-                            chronic conditions internal Medicine.</p>
-                        <a href="Departments/Internal_Medicine.html" class="service-btn">Read More</a>
-                    </div>
-                </div>
+            <div class="services-grid" id="services-grid-container">
+                <!-- Dynamically populated from backend -->
             </div>
 
             <div style="text-align: center; margin-top: 3rem;">
@@ -373,6 +271,37 @@
     <!-- JavaScript Libraries -->
     <script src="js/auth.js"></script>
     <script src="js/script.js"></script>
+    <!-- Dynamic Department Scripts -->
+    <script src="js/departments.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const container = document.getElementById('services-grid-container');
+            if (container && window.getDepartments) {
+                const departments = await window.getDepartments();
+                if (departments.length === 0) {
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 3rem;">No departments found.</p>';
+                } else {
+                    container.innerHTML = departments.map(dept => {
+                        let filename = dept.name.replace(/\s+/g, '_');
+                        if (filename === 'Surgery') filename = 'General_Surgery';
+                        const pageUrl = `Departments/${filename}.html`;
+                        return `
+                            <div class="service-card">
+                                <div class="service-image-box">
+                                    <img src="${dept.image || 'img/Cardiology.png'}" alt="${dept.name}" onerror="this.src='img/Cardiology.png'">
+                                </div>
+                                <div class="service-content">
+                                    <h5 class="service-title">${dept.name === 'Gynecology' ? 'Gynecology & Obstetrics' : dept.name}</h5>
+                                    <p class="service-desc">${dept.description}</p>
+                                    <a href="${pageUrl}" class="service-btn">Read More</a>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            }
+        });
+    </script>
     <!-- Dynamic Blog Scripts -->
     <script src="js/blog-data.js"></script>
     <script src="js/blog-manager.js"></script>

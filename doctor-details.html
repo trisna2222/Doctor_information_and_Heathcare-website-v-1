@@ -279,7 +279,7 @@
                 // 1. Fetch Doctor details and reviews in parallel
                 const [doctor, reviewsRes] = await Promise.all([
                     window.getDoctorById(doctorId),
-                    fetch(`http://localhost:5000/api/reviews/doctor/${doctorId}`).then(res => res.json())
+                    fetch(`http://127.0.0.1:5000/api/reviews/doctor/${doctorId}`).then(res => res.json())
                 ]);
 
                 if (!doctor) {
@@ -423,7 +423,7 @@
                                 submitBtn.disabled = true;
                                 submitBtn.textContent = 'Submitting...';
 
-                                const response = await fetch('http://localhost:5000/api/reviews', {
+                                const response = await fetch('http://127.0.0.1:5000/api/reviews', {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
                                     body: JSON.stringify({

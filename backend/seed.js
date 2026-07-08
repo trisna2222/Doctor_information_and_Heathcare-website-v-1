@@ -2,6 +2,66 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const Doctor = require('./models/Doctor');
+const Department = require('./models/Department');
+
+const initialDepartments = [
+    {
+        name: "Cardiology",
+        description: "Our Cardiology department is dedicated to providing comprehensive care for patients with heart and vascular conditions. We utilize state-of-the-art technology and evidence-based treatments.",
+        image: "img/Cardiology.png",
+        icon: "fas fa-heartbeat",
+        services: ["Cardiac Consultations", "ECG & Echocardiography", "Interventional Cardiology", "Cardiac Rehabilitation"]
+    },
+    {
+        name: "Neurology",
+        description: "Our Neurology department offers specialized diagnosis and treatment for disorders of the nervous system, including the brain, spinal cord, nerves, and muscles.",
+        image: "img/Neurology.png",
+        icon: "fas fa-brain",
+        services: ["Neurological Consultations", "Stroke Management", "Epilepsy Treatment", "Migraine & Headache Care"]
+    },
+    {
+        name: "Orthopedics",
+        description: "Our Orthopedics department provides expert care for bone, joint, ligament, tendon, and muscle conditions, helping you regain mobility and live pain-free.",
+        image: "img/Orthopedics.png",
+        icon: "fas fa-bone",
+        services: ["Joint Replacement", "Sports Medicine", "Fracture & Trauma Care", "Pediatric Orthopedics"]
+    },
+    {
+        name: "Gynecology",
+        description: "Our Gynecology department delivers compassionate and comprehensive healthcare for women at every stage of life, prioritizing their health and comfort.",
+        image: "img/Gynecology.png",
+        icon: "fas fa-female",
+        services: ["Prenatal & Postnatal Care", "High-Risk Pregnancy Care", "Laparoscopic Gyne Surgery", "Family Planning Services"]
+    },
+    {
+        name: "Pediatrics",
+        description: "Our Pediatrics department is dedicated to the physical, emotional, and social health of children from birth through adolescence.",
+        image: "img/Pediatrics.png",
+        icon: "fas fa-baby",
+        services: ["General Pediatric Care", "Immunization & Vaccination", "Child Development Assessment", "Pediatric Asthma Management"]
+    },
+    {
+        name: "Dermatology",
+        description: "Our Dermatology department offers advanced clinical skin care and cosmetic treatments for acne, aging, and various skin disorders.",
+        image: "img/Dermatology.png",
+        icon: "fas fa-allergies",
+        services: ["Clinical Dermatology", "Dermatosurgery", "Cosmetic Skin Treatments", "Laser Therapy"]
+    },
+    {
+        name: "Surgery",
+        description: "Our General Surgery department provides a wide range of surgical interventions with focus on patient safety, precision, and quick recovery.",
+        image: "img/Surgery.png",
+        icon: "fas fa-briefcase-medical",
+        services: ["Abdominal Surgery", "Laparoscopic Surgery", "Hernia Repair", "Soft Tissue Surgery"]
+    },
+    {
+        name: "Internal Medicine",
+        description: "Our Internal Medicine department offers comprehensive care for acute and chronic internal diseases, focusing on personalized treatment plans.",
+        image: "img/Internal_Medicine.png",
+        icon: "fas fa-stethoscope",
+        services: ["Chronic Disease Management", "Geriatric Medicine", "Infectious Diseases Care", "Preventive Health Screening"]
+    }
+];
 
 const initialDoctors = [
     {
@@ -299,6 +359,7 @@ async function seed() {
         await mongoose.connect(process.env.MONGO_URI);
         console.log('MongoDB connected for seeding...');
 
+        // Seed Doctors
         for (const doc of initialDoctors) {
             const exists = await Doctor.findOne({ name: doc.name });
             if (!exists) {
@@ -307,6 +368,17 @@ async function seed() {
                 console.log(`Seeded doctor: ${doc.name}`);
             }
         }
+
+        // Seed Departments
+        for (const dept of initialDepartments) {
+            const exists = await Department.findOne({ name: dept.name });
+            if (!exists) {
+                const newDept = new Department(dept);
+                await newDept.save();
+                console.log(`Seeded department: ${dept.name}`);
+            }
+        }
+
         console.log('Seeding completed successfully.');
         process.exit(0);
     } catch (err) {

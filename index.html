@@ -172,101 +172,8 @@
                 </p>
             </div>
 
-            <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-image-box">
-                        <img src="img/Cardiology.png" alt="Cardiology">
-                    </div>
-                    <div class="service-content">
-                        <h5 class="service-title">Cardiology</h5>
-                        <p class="service-desc">Focuses on the diagnosis and treatment of heart-related diseases,
-                            including high blood pressure, heart attacks, and rhythm disorders.</p>
-                        <a href="Departments/Cardiology.html" class="service-btn">Read More</a>
-                    </div>
-                </div>
-
-                <div class="service-card">
-                    <div class="service-image-box">
-                        <img src="img/Neurology.png" alt="Neurology">
-                    </div>
-                    <div class="service-content">
-                        <h5 class="service-title">Neurology</h5>
-                        <p class="service-desc">Deals with disorders of the brain, spinal cord, and nervous system such
-                            as stroke, epilepsy, and migraine.</p>
-                        <a href="Departments/Neurology.html" class="service-btn">Read More</a>
-                    </div>
-                </div>
-
-                <div class="service-card">
-                    <div class="service-image-box">
-                        <img src="img/Orthopedics.png" alt="Orthopedics">
-                    </div>
-                    <div class="service-content">
-                        <h5 class="service-title">Orthopedics</h5>
-                        <p class="service-desc">Specializes in bones, joints, muscles, and ligaments, treating
-                            fractures, arthritis, and sports injuries.</p>
-                        <a href="Departments/Orthopedics.html" class="service-btn">Read More</a>
-                    </div>
-                </div>
-
-                <div class="service-card">
-                    <div class="service-image-box">
-                        <img src="img/Pediatrics.png" alt="Pediatrics">
-                    </div>
-                    <div class="service-content">
-                        <h5 class="service-title">Pediatrics</h5>
-                        <p class="service-desc">Provides medical care for infants, children, and adolescents, ensuring
-                            healthy growth and development.</p>
-                        <a href="Departments/Pediatrics.html" class="service-btn">Read More</a>
-                    </div>
-                </div>
-
-                <div class="service-card">
-                    <div class="service-image-box">
-                        <img src="img/Gynecology & Obstetrics.png" alt="Gynecology">
-                    </div>
-                    <div class="service-content">
-                        <h5 class="service-title">Gynecology & Obstetrics</h5>
-                        <p class="service-desc">Focuses on women’s reproductive health, pregnancy care, childbirth, and
-                            postnatal services.</p>
-                        <a href="Departments/Gynecology.html" class="service-btn">Read More</a>
-                    </div>
-                </div>
-
-                <div class="service-card">
-                    <div class="service-image-box">
-                        <img src="img/Dermatology.png" alt="Dermatology">
-                    </div>
-                    <div class="service-content">
-                        <h5 class="service-title">Dermatology</h5>
-                        <p class="service-desc">Treats skin, hair, and nail conditions including acne, eczema,
-                            infections, and allergies.</p>
-                        <a href="Departments/Dermatology.html" class="service-btn">Read More</a>
-                    </div>
-                </div>
-
-                <div class="service-card">
-                    <div class="service-image-box">
-                        <img src="img/General surgery.png" alt="General Surgery">
-                    </div>
-                    <div class="service-content">
-                        <h5 class="service-title">General Surgery</h5>
-                        <p class="service-desc">Performs surgical procedures for conditions involving the abdomen,
-                            digestive system, and soft tissues.</p>
-                        <a href="Departments/General_Surgery.html" class="service-btn">Read More</a>
-                    </div>
-                </div>
-                <div class="service-card">
-                    <div class="service-image-box">
-                        <img src="img/Internal Medicine.png" alt="Internal Medicine">
-                    </div>
-                    <div class="service-content">
-                        <h5 class="service-title">Internal Medicine</h5>
-                        <p class="service-desc">Manages adult diseases such as diabetes, hypertension, infections, and
-                            chronic conditions.</p>
-                        <a href="Departments/Internal_Medicine.html" class="service-btn">Read More</a>
-                    </div>
-                </div>
+            <div class="services-grid" id="services-grid-container">
+                <!-- Dynamically populated from backend -->
             </div>
 
             <div class="text-center" style="margin-top: 3rem;">
@@ -781,21 +688,75 @@
                     teamContainer.innerHTML = displayDoctors.map(doc => {
                         const link = doc.filename || `doctor-details.html?id=${doc.id}`;
                         return `
-                            <div class="team-card">
+                            <div class="team-card animate-card">
                                 <div class="team-img-box">
                                     <a href="${link}">
                                         <img src="${doc.image}" alt="${doc.name}" onerror="this.src='img/default-doctor.jpg'">
                                     </a>
+                                    <div class="dept-badge">${doc.department}</div>
                                 </div>
                                 <div class="team-content">
                                     <h5 class="team-name">
                                         <a href="${link}">${doc.name}</a>
                                     </h5>
-                                    <p class="team-role">${doc.role || doc.department}</p>
+                                    <div class="team-role">${doc.role || doc.department}</div>
+                                    
+                                    <div class="team-details-grid">
+                                        <div class="detail-item" title="Qualification">
+                                            <i class="fas fa-graduation-cap"></i>
+                                            <span>${doc.qualification || 'MBBS, FCPS'}</span>
+                                        </div>
+                                        <div class="detail-item" title="Consultation Fee">
+                                            <i class="fas fa-money-bill-wave"></i>
+                                            <span>৳${doc.fee || '1200'} BDT</span>
+                                        </div>
+                                        <div class="detail-item full-width" title="Schedule">
+                                            <i class="fas fa-calendar-alt"></i>
+                                            <span>${doc.schedule || 'Available on Call'}</span>
+                                        </div>
+                                        <div class="detail-item" title="Phone">
+                                            <i class="fas fa-phone-alt"></i>
+                                            <span>${doc.phone || '+8801300570555'}</span>
+                                        </div>
+                                    </div>
+
+                                    ${doc.bio ? `<p class="team-bio-short" title="${doc.bio}">${doc.bio}</p>` : ''}
+
                                     <div class="team-card-actions">
-                                        <a href="tel:${doc.phone || '+8801300570555'}" class="btn-call"><i class="fas fa-phone-alt"></i> Call Now</a>
+                                        <a href="tel:${doc.phone || '+8801300570555'}" class="btn-call"><i class="fas fa-phone-alt"></i> Call</a>
                                         <a href="appointment.html?doctor=${doc.id}" class="btn-book"><i class="fas fa-calendar-check"></i> Book Now</a>
                                     </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            }
+        });
+    </script>
+    <!-- Dynamic Department Scripts -->
+    <script src="js/departments.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const container = document.getElementById('services-grid-container');
+            if (container && window.getDepartments) {
+                const departments = await window.getDepartments();
+                if (departments.length === 0) {
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 3rem;">No departments found.</p>';
+                } else {
+                    container.innerHTML = departments.map(dept => {
+                        let filename = dept.name.replace(/\s+/g, '_');
+                        if (filename === 'Surgery') filename = 'General_Surgery';
+                        const pageUrl = `Departments/${filename}.html`;
+                        return `
+                            <div class="service-card">
+                                <div class="service-image-box">
+                                    <img src="${dept.image || 'img/Cardiology.png'}" alt="${dept.name}" onerror="this.src='img/Cardiology.png'">
+                                </div>
+                                <div class="service-content">
+                                    <h5 class="service-title">${dept.name === 'Gynecology' ? 'Gynecology & Obstetrics' : dept.name}</h5>
+                                    <p class="service-desc">${dept.description}</p>
+                                    <a href="${pageUrl}" class="service-btn">Read More</a>
                                 </div>
                             </div>
                         `;

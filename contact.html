@@ -98,21 +98,21 @@
                     <p>Contact us for any inquiries, medical services, or appointment assistance. Your health matters to
                         us.</p>
 
-                    <form class="form-grid" style="grid-template-columns: 1fr;">
+                    <form id="contact-form" class="form-grid" style="grid-template-columns: 1fr;">
                         <!-- Override grid columns for this specific form -->
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <input type="text" class="form-input" placeholder="Your Name">
-                            <input type="email" class="form-input" placeholder="Your Email">
+                            <input type="text" id="contact-name" class="form-input" placeholder="Your Name" required>
+                            <input type="email" id="contact-email" class="form-input" placeholder="Your Email" required>
                         </div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <input type="tel" class="form-input" placeholder="Your Phone">
-                            <input type="text" class="form-input" placeholder="Your Project">
+                            <input type="tel" id="contact-phone" class="form-input" placeholder="Your Phone">
+                            <input type="text" id="contact-project" class="form-input" placeholder="Your Project">
                         </div>
 
-                        <input type="text" class="form-input full-width" placeholder="Subject">
+                        <input type="text" id="contact-subject" class="form-input full-width" placeholder="Subject" required>
 
-                        <textarea class="form-textarea full-width" rows="5"
-                            placeholder="Leave a message here"></textarea>
+                        <textarea id="contact-message" class="form-textarea full-width" rows="5"
+                            placeholder="Leave a message here" required></textarea>
 
                         <button type="submit" class="form-btn full-width" style="margin-top: 1rem;">Send
                             Message</button>
@@ -208,6 +208,7 @@
     </footer>
 
     <script src="js/auth.js"></script>
+    <script src="js/contact.js"></script>
 </body>
 
 </html>

@@ -163,14 +163,166 @@
                         </div>
                         <div class="blog-meta mb-3" style="color: #666; font-size: 0.9rem;">
                             <span class="me-3"><i class="fa fa-calendar-alt text-primary me-2"></i>${blog.date}</span>
-                            <span><i class="fa fa-comments text-primary me-2"></i>${blog.comments} Comments</span>
+                            <span><i class="fa fa-comments text-primary me-2"></i><span id="comments-count-badge">0</span> Comments</span>
                         </div>
                         <h1 class="mb-4" style="color: var(--primary-dark); font-weight: 700;">${blog.title}</h1>
-                        <div class="blog-content" style="line-height: 1.8; color: #555;">
+                        <div class="blog-content mb-5" style="line-height: 1.8; color: #555;">
                             ${blog.content}
                         </div>
                     </article>
+
+                    <!-- Comments Section -->
+                    <section class="comments-section" style="max-width: 800px; margin: 3rem auto 0 auto;">
+                        <h3 class="mb-4" style="color: var(--bs-dark); font-weight: 700; font-size: 1.5rem;">
+                            Comments (<span id="comments-count">0</span>)
+                        </h3>
+                        
+                        <!-- Comments List -->
+                        <div id="comments-list" class="mb-5">
+                            <div style="text-align: center; color: #888; padding: 2rem;">Loading comments...</div>
+                        </div>
+
+                        <!-- Add Comment Form -->
+                        <div class="add-comment-wrapper">
+                            <h4 class="mb-3" style="font-size: 1.25rem;">Leave a Comment</h4>
+                            <div id="comment-form-container">
+                                <!-- Populated dynamically based on auth status -->
+                            </div>
+                        </div>
+                    </section>
                 `;
+
+                // Load Comments
+                const commentsListEl = document.getElementById('comments-list');
+                const commentsCountEl = document.getElementById('comments-count');
+                const commentsCountBadgeEl = document.getElementById('comments-count-badge');
+                const formContainerEl = document.getElementById('comment-form-container');
+
+                async function fetchComments() {
+                    try {
+                        const res = await fetch(`http://127.0.0.1:5000/api/comments/blog/${id}`);
+                        if (!res.ok) throw new Error('Failed to fetch comments');
+                        const comments = await res.json();
+
+                        // Update counts
+                        commentsCountEl.textContent = comments.length;
+                        commentsCountBadgeEl.textContent = comments.length;
+
+                        // Display comments
+                        if (comments.length === 0) {
+                            commentsListEl.innerHTML = `<div style="text-align: center; color: #64748b; padding: 2rem; border: 1px dashed #cbd5e1; border-radius: 8px; background: #fafafa; font-size: 0.95rem;">No comments yet. Be the first to share your thoughts!</div>`;
+                            return;
+                        }
+
+                        commentsListEl.innerHTML = comments.map(c => {
+                            const dateStr = new Date(c.createdAt).toLocaleDateString('en-US', {
+                                year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                            });
+                            const initial = c.userName ? c.userName.charAt(0).toUpperCase() : 'U';
+
+                            // Check if user has a profile picture
+                            const hasProfilePic = c.userId && c.userId.profilePicture;
+                            const avatarHTML = hasProfilePic
+                                ? `<img class="comment-avatar" src="${c.userId.profilePicture}" alt="${c.userName}" onerror="this.outerHTML='<div class=&quot;comment-avatar&quot;>${initial}</div>'">`
+                                : `<div class="comment-avatar">${initial}</div>`;
+
+                            return `
+                                <div class="comment-item">
+                                    ${avatarHTML}
+                                    <div class="comment-content">
+                                        <div class="comment-header">
+                                            <span class="comment-author">${c.userName}</span>
+                                            <span class="comment-date">${dateStr}</span>
+                                        </div>
+                                        <p class="comment-text">${c.commentText}</p>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                    } catch (err) {
+                        console.error('Error fetching comments:', err);
+                        commentsListEl.innerHTML = `<div style="text-align: center; color: #ef4444; padding: 1.5rem;">Error loading comments. Please try again later.</div>`;
+                    }
+                }
+
+                function setupCommentForm() {
+                    const currentUserStr = localStorage.getItem('medicoz_current_user') || localStorage.getItem('currentUser');
+                    if (currentUserStr) {
+                        const user = JSON.parse(currentUserStr);
+                        formContainerEl.innerHTML = `
+                            <form id="comment-submit-form">
+                                <p style="font-size: 0.9rem; color: #475569; margin-bottom: 1rem;">
+                                    Logged in as <strong style="color: var(--bs-primary);">${user.name}</strong> (${user.email})
+                                </p>
+                                <div class="form-group mb-3">
+                                    <textarea id="comment-textarea" class="form-control" placeholder="Write your comment here..." required style="min-height: 100px; font-family: inherit;"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1.5rem; font-weight: 600;">
+                                    <i class="fas fa-paper-plane me-2"></i>Post Comment
+                                </button>
+                                <div id="comment-alert" class="comment-status-msg"></div>
+                            </form>
+                        `;
+
+                        // Add Submit listener
+                        document.getElementById('comment-submit-form').addEventListener('submit', async (e) => {
+                            e.preventDefault();
+                            const text = document.getElementById('comment-textarea').value.trim();
+                            const alertBox = document.getElementById('comment-alert');
+
+                            if (!text) return;
+
+                            try {
+                                const response = await fetch('http://127.0.0.1:5000/api/comments', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        blogId: id,
+                                        blogTitle: blog.title,
+                                        userId: user.id || user._id || null,
+                                        userName: user.name,
+                                        userEmail: user.email,
+                                        commentText: text
+                                    })
+                                });
+
+                                const data = await response.json();
+                                if (!response.ok) throw new Error(data.message || 'Failed to submit comment');
+
+                                // Show success
+                                alertBox.className = 'comment-status-msg success';
+                                alertBox.textContent = 'Your comment has been submitted and is waiting for administrator approval.';
+                                alertBox.style.display = 'block';
+                                document.getElementById('comment-textarea').value = '';
+
+                                // Hide alert after 6s
+                                setTimeout(() => {
+                                    alertBox.style.display = 'none';
+                                }, 6000);
+                            } catch (err) {
+                                console.error('Error submitting comment:', err);
+                                alertBox.className = 'comment-status-msg error';
+                                alertBox.textContent = err.message || 'Error submitting comment. Please try again.';
+                                alertBox.style.display = 'block';
+                            }
+                        });
+                    } else {
+                        formContainerEl.innerHTML = `
+                            <div style="text-align: center; padding: 1.5rem; background: #f1f5f9; border-radius: 8px; border: 1px solid #cbd5e1;">
+                                <p style="color: #475569; margin-bottom: 1rem; font-weight: 500;">You must be logged in to post a comment.</p>
+                                <a href="login.html" class="btn btn-primary" style="font-weight: 600; padding: 0.5rem 1.5rem;">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login Now
+                                </a>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Initialize
+                fetchComments();
+                setupCommentForm();
             } else {
                 container.innerHTML = '<div style="text-align:center"><h3>Post Not Found</h3><p>The requested blog post does not exist. <a href="blog.html">Go Back</a></p></div>';
             }

@@ -25,18 +25,24 @@ tabs.forEach(tab => {
             target.style.display = 'block';
             setTimeout(() => target.classList.add('active'), 10);
         }
-        
+
         // Render data for the selected tab
         if (tab.dataset.tab === 'users') {
             renderUsers();
         } else if (tab.dataset.tab === 'doctors') {
             renderDoctors();
+        } else if (tab.dataset.tab === 'departments') {
+            renderDepartments();
         } else if (tab.dataset.tab === 'applications') {
             renderApplications();
         } else if (tab.dataset.tab === 'appointments') {
             renderAppointments();
+        } else if (tab.dataset.tab === 'messages') {
+            renderMessages();
+        } else if (tab.dataset.tab === 'comments') {
+            renderComments();
         }
-        
+
         // Update page title
         const pageTitle = document.getElementById('page-title');
         if (pageTitle) {
@@ -77,7 +83,7 @@ function displayDoctors(doctorsList) {
     doctorsList.forEach(doc => {
         const card = document.createElement('div');
         card.className = 'doctor-card';
-        
+
         const schedule = doc.schedule || 'Not Set';
         const fee = doc.fee ? `${doc.fee} BDT` : 'Not Set';
         const qualification = doc.qualification || 'Not Set';
@@ -128,13 +134,13 @@ function displayDoctors(doctorsList) {
 function handleDoctorSearch() {
     if (!docSearchInput) return;
     const query = docSearchInput.value.toLowerCase().trim();
-    
-    const filtered = allDoctors.filter(doc => 
+
+    const filtered = allDoctors.filter(doc =>
         (doc.name && doc.name.toLowerCase().includes(query)) ||
         (doc.department && doc.department.toLowerCase().includes(query)) ||
         (doc.role && doc.role.toLowerCase().includes(query))
     );
-    
+
     displayDoctors(filtered);
 }
 
@@ -220,7 +226,7 @@ if (cancelDocBtn) cancelDocBtn.addEventListener('click', closeDocModal);
 // Doctor image upload and preview handler
 const docImageFileInput = document.getElementById('doctor-image-file');
 if (docImageFileInput) {
-    docImageFileInput.addEventListener('change', function(event) {
+    docImageFileInput.addEventListener('change', function (event) {
         const file = event.target.files[0];
         if (!file) return;
 
@@ -232,7 +238,7 @@ if (docImageFileInput) {
         }
 
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             const base64 = e.target.result;
             document.getElementById('image').value = base64;
             document.getElementById('doctor-image-preview').src = base64;
@@ -252,16 +258,28 @@ const blogModalTitle = document.getElementById('blog-modal-title');
 const blogForm = document.getElementById('blog-form');
 const addBlogBtn = document.getElementById('add-blog-btn');
 const closeBlogBtn = document.getElementById('close-blog-modal');
+const blogSearchInput = document.getElementById('blog-search-input');
+let allBlogs = [];
 
 function renderBlogs() {
     if (!window.getBlogs) return;
 
-    const blogs = window.getBlogs();
-    if (blogTableBody) {
-        blogTableBody.innerHTML = '';
-        blogs.forEach(blog => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
+    allBlogs = window.getBlogs();
+    displayBlogs(allBlogs);
+}
+
+function displayBlogs(blogsList) {
+    if (!blogTableBody) return;
+    blogTableBody.innerHTML = '';
+
+    if (blogsList.length === 0) {
+        blogTableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-secondary); padding: 2rem;">No posts found.</td></tr>`;
+        return;
+    }
+
+    blogsList.forEach(blog => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
             <td class="td-flex">
                 <img class="blog-img" src="${blog.image}" alt="${blog.title}" onerror="this.src='img/blog1.png'">
                 <div>
@@ -276,16 +294,32 @@ function renderBlogs() {
             </td>
         `;
         blogTableBody.appendChild(tr);
-        });
+    });
 
-        document.querySelectorAll('.edit-blog-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => openEditBlogModal(e.target.closest('button').dataset.id));
-        });
+    blogTableBody.querySelectorAll('.edit-blog-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => openEditBlogModal(e.target.closest('button').dataset.id));
+    });
 
-        document.querySelectorAll('.delete-blog-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => handleBlogDelete(e.target.closest('button').dataset.id));
-        });
-    }
+    blogTableBody.querySelectorAll('.delete-blog-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => handleBlogDelete(e.target.closest('button').dataset.id));
+    });
+}
+
+function handleBlogSearch() {
+    if (!blogSearchInput) return;
+    const query = blogSearchInput.value.toLowerCase().trim();
+
+    const filtered = allBlogs.filter(blog =>
+        (blog.title && blog.title.toLowerCase().includes(query)) ||
+        (blog.excerpt && blog.excerpt.toLowerCase().includes(query)) ||
+        (blog.content && blog.content.toLowerCase().includes(query))
+    );
+
+    displayBlogs(filtered);
+}
+
+if (blogSearchInput) {
+    blogSearchInput.addEventListener('input', handleBlogSearch);
 }
 
 function openBlogModal() { blogModal.classList.add('active'); }
@@ -356,12 +390,182 @@ if (cancelBlogBtn) cancelBlogBtn.addEventListener('click', closeBlogModal);
 window.addEventListener('click', (e) => {
     if (e.target === docModal) closeDocModal();
     if (e.target === blogModal) closeBlogModal();
+    if (e.target === deptModal) closeDeptModal();
 });
+
+/* ===========================
+   DEPARTMENTS Logic
+   =========================== */
+const deptTableBody = document.getElementById('departments-table-body');
+const deptModal = document.getElementById('department-modal');
+const deptModalTitle = document.getElementById('department-modal-title');
+const deptForm = document.getElementById('department-form');
+const addDeptBtn = document.getElementById('add-department-btn');
+const closeDeptBtn = document.getElementById('close-department-modal');
+const deptSearchInput = document.getElementById('department-search-input');
+let allDepartments = [];
+
+async function renderDepartments() {
+    if (!window.getDepartments) return;
+
+    allDepartments = await window.getDepartments();
+    displayDepartments(allDepartments);
+    populateDoctorDepartmentDropdown(allDepartments);
+}
+
+function displayDepartments(deptsList) {
+    if (!deptTableBody) return;
+    deptTableBody.innerHTML = '';
+
+    if (deptsList.length === 0) {
+        deptTableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 2rem;">No departments found.</td></tr>`;
+        return;
+    }
+
+    deptsList.forEach(dept => {
+        const tr = document.createElement('tr');
+        const servicesList = dept.services && dept.services.length > 0
+            ? dept.services.map(s => `<span class="role-badge" style="background: #e2e8f0; color: #475569; font-weight: 500; font-size: 0.75rem; margin-right: 5px; display: inline-block; margin-bottom: 5px;">${s}</span>`).join('')
+            : '<span style="color: #cbd5e1; font-style: italic;">No services listed</span>';
+
+        tr.innerHTML = `
+            <td class="td-flex">
+                <img class="blog-img" src="${dept.image || 'img/Cardiology.png'}" alt="${dept.name}" onerror="this.src='img/Cardiology.png'">
+                <div>
+                    <strong>${dept.name}</strong>
+                </div>
+            </td>
+            <td>
+                <span style="font-size: 1.25rem;"><i class="${dept.icon || 'fas fa-heartbeat'}"></i></span>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">${dept.icon || ''}</div>
+            </td>
+            <td>
+                <div style="font-size: 0.85rem; color: var(--text-main); font-weight: 500; margin-bottom: 5px;">${dept.description || ''}</div>
+                <div style="margin-top: 5px;">${servicesList}</div>
+            </td>
+            <td class="actions-cell">
+                <button class="btn btn-edit btn-sm edit-dept-btn" data-id="${dept.id}"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-danger btn-sm delete-dept-btn" data-id="${dept.id}"><i class="fas fa-trash"></i> Delete</button>
+            </td>
+        `;
+        deptTableBody.appendChild(tr);
+    });
+
+    deptTableBody.querySelectorAll('.edit-dept-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => openEditDeptModal(e.target.closest('button').dataset.id));
+    });
+
+    deptTableBody.querySelectorAll('.delete-dept-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => handleDeptDelete(e.target.closest('button').dataset.id));
+    });
+}
+
+function handleDeptSearch() {
+    if (!deptSearchInput) return;
+    const query = deptSearchInput.value.toLowerCase().trim();
+
+    const filtered = allDepartments.filter(dept =>
+        (dept.name && dept.name.toLowerCase().includes(query)) ||
+        (dept.description && dept.description.toLowerCase().includes(query)) ||
+        (dept.services && dept.services.some(s => s.toLowerCase().includes(query)))
+    );
+
+    displayDepartments(filtered);
+}
+
+if (deptSearchInput) {
+    deptSearchInput.addEventListener('input', handleDeptSearch);
+}
+
+function openDeptModal() { deptModal.classList.add('active'); }
+function closeDeptModal() {
+    deptModal.classList.remove('active');
+    deptForm.reset();
+    document.getElementById('department-id').value = '';
+}
+
+async function openEditDeptModal(id) {
+    const dept = allDepartments.find(d => d.id === id);
+    if (!dept) return;
+
+    deptModalTitle.innerText = 'Edit Department';
+    document.getElementById('department-id').value = dept.id;
+    document.getElementById('department-name').value = dept.name || '';
+    document.getElementById('department-icon').value = dept.icon || 'fas fa-heartbeat';
+    document.getElementById('department-image').value = dept.image || 'img/Cardiology.png';
+    document.getElementById('department-description').value = dept.description || '';
+    document.getElementById('department-services').value = dept.services ? dept.services.join(', ') : '';
+
+    openDeptModal();
+}
+
+async function handleDeptDelete(id) {
+    if (confirm('Are you sure you want to delete this department?')) {
+        await window.deleteDepartment(id);
+        renderDepartments();
+    }
+}
+
+if (deptForm) {
+    deptForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('department-id').value;
+        const servicesInput = document.getElementById('department-services').value;
+        const servicesArray = servicesInput
+            .split(',')
+            .map(s => s.trim())
+            .filter(s => s.length > 0);
+
+        const newDept = {
+            id: id || '',
+            name: document.getElementById('department-name').value,
+            icon: document.getElementById('department-icon').value,
+            image: document.getElementById('department-image').value,
+            description: document.getElementById('department-description').value,
+            services: servicesArray
+        };
+
+        await window.saveDepartment(newDept);
+        closeDeptModal();
+        renderDepartments();
+    });
+}
+
+if (addDeptBtn) {
+    addDeptBtn.addEventListener('click', () => {
+        deptModalTitle.innerText = 'Add New Department';
+        openDeptModal();
+    });
+}
+
+if (closeDeptBtn) {
+    closeDeptBtn.addEventListener('click', closeDeptModal);
+}
+const cancelDeptBtn = document.getElementById('cancel-department');
+if (cancelDeptBtn) cancelDeptBtn.addEventListener('click', closeDeptModal);
+
+// Dynamic Dropdown Helper in Doctors Management
+function populateDoctorDepartmentDropdown(deptsList) {
+    const selectEl = document.getElementById('department');
+    if (!selectEl) return;
+
+    // Remember current selection
+    const currentVal = selectEl.value;
+
+    selectEl.innerHTML = deptsList.map(dept =>
+        `<option value="${dept.name}">${dept.name}</option>`
+    ).join('');
+
+    // Restore value if it exists in the list
+    if (deptsList.some(d => d.name === currentVal)) {
+        selectEl.value = currentVal;
+    }
+}
 
 /* ===========================
    USERS Logic
    =========================== */
-const USERS_API_BASE = 'http://localhost:5000/api/auth';
+const USERS_API_BASE = 'http://127.0.0.1:5000/api/auth';
 const usersTableBody = document.getElementById('users-table-body');
 const userSearchInput = document.getElementById('user-search-input');
 let allUsers = [];
@@ -373,7 +577,7 @@ async function renderUsers() {
         const response = await fetch(`${USERS_API_BASE}/users`);
         if (!response.ok) throw new Error('Failed to fetch users');
         allUsers = await response.json();
-        
+
         displayUsers(allUsers);
     } catch (err) {
         console.error('Error rendering users:', err);
@@ -383,9 +587,9 @@ async function renderUsers() {
 
 function displayUsers(usersList) {
     if (!usersTableBody) return;
-    
+
     usersTableBody.innerHTML = '';
-    
+
     if (usersList.length === 0) {
         usersTableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 2rem;">No users found.</td></tr>`;
         return;
@@ -393,7 +597,7 @@ function displayUsers(usersList) {
 
     usersList.forEach(user => {
         const tr = document.createElement('tr');
-        
+
         // Avatar rendering
         let avatarHTML = '';
         if (user.profilePicture) {
@@ -425,12 +629,12 @@ function displayUsers(usersList) {
 function handleUserSearch() {
     if (!userSearchInput) return;
     const query = userSearchInput.value.toLowerCase().trim();
-    
-    const filtered = allUsers.filter(user => 
+
+    const filtered = allUsers.filter(user =>
         (user.name && user.name.toLowerCase().includes(query)) ||
         (user.email && user.email.toLowerCase().includes(query))
     );
-    
+
     displayUsers(filtered);
 }
 
@@ -439,11 +643,21 @@ if (userSearchInput) {
 }
 
 // Init
-renderDoctors();
-renderBlogs();
-renderUsers();
-renderApplications();
-renderAppointments();
+async function init() {
+    if (window.getDepartments) {
+        const depts = await window.getDepartments();
+        allDepartments = depts;
+        populateDoctorDepartmentDropdown(depts);
+    }
+    renderDoctors();
+    renderBlogs();
+    renderUsers();
+    renderApplications();
+    renderAppointments();
+    renderMessages();
+    renderComments();
+}
+init();
 
 /* ===========================
    APPLICATIONS Logic
@@ -459,7 +673,7 @@ async function renderApplications() {
         const response = await fetch(`${USERS_API_BASE}/doctor-applications`);
         if (!response.ok) throw new Error('Failed to fetch applications');
         allApplications = await response.json();
-        
+
         displayApplications(allApplications);
     } catch (err) {
         console.error('Error rendering applications:', err);
@@ -478,7 +692,7 @@ function displayApplications(applicationsList) {
 
     applicationsList.forEach(app => {
         const tr = document.createElement('tr');
-        
+
         // Avatar rendering
         let avatarHTML = '';
         if (app.image && app.image.startsWith('data:image')) {
@@ -489,7 +703,7 @@ function displayApplications(applicationsList) {
         }
 
         const fee = app.fee ? `${app.fee} BDT` : 'Not Set';
-        
+
         // Status Badge
         let statusBadge = '';
         if (app.status === 'pending') {
@@ -555,9 +769,9 @@ async function handleApproveApplication(id) {
             method: 'POST'
         });
         const data = await response.json();
-        
+
         if (!response.ok) throw new Error(data.message || 'Failed to approve application');
-        
+
         alert('Application approved successfully!');
         renderApplications();
         renderDoctors(); // Reload doctors list too
@@ -575,9 +789,9 @@ async function handleRejectApplication(id) {
             method: 'POST'
         });
         const data = await response.json();
-        
+
         if (!response.ok) throw new Error(data.message || 'Failed to reject application');
-        
+
         alert('Application rejected successfully!');
         renderApplications();
     } catch (err) {
@@ -589,13 +803,13 @@ async function handleRejectApplication(id) {
 function handleApplicationSearch() {
     if (!applicationSearchInput) return;
     const query = applicationSearchInput.value.toLowerCase().trim();
-    
-    const filtered = allApplications.filter(app => 
+
+    const filtered = allApplications.filter(app =>
         (app.name && app.name.toLowerCase().includes(query)) ||
         (app.email && app.email.toLowerCase().includes(query)) ||
         (app.department && app.department.toLowerCase().includes(query))
     );
-    
+
     displayApplications(filtered);
 }
 
@@ -614,10 +828,10 @@ async function renderAppointments() {
     if (!appointmentsTableBody) return;
 
     try {
-        const response = await fetch('http://localhost:5000/api/appointments');
+        const response = await fetch('http://127.0.0.1:5000/api/appointments');
         if (!response.ok) throw new Error('Failed to fetch appointments');
         allAppointments = await response.json();
-        
+
         displayAppointments(allAppointments);
     } catch (err) {
         console.error('Error rendering appointments:', err);
@@ -636,7 +850,7 @@ function displayAppointments(appointmentsList) {
 
     appointmentsList.forEach(app => {
         const tr = document.createElement('tr');
-        
+
         const dateStr = new Date(app.date).toLocaleDateString('en-US', {
             year: 'numeric', month: 'short', day: 'numeric'
         });
@@ -677,7 +891,7 @@ function displayAppointments(appointmentsList) {
                 <button class="btn btn-danger btn-sm cancel-appt-btn" data-id="${app._id}" style="background: #e74c3c; color: white; border: none; padding: 4px 8px; margin-right: 4px; cursor: pointer; border-radius: 4px;"><i class="fas fa-times"></i> Cancel</button>
             `;
         }
-        
+
         // Delete button is always available to admin
         actionsHTML += `
             <button class="btn btn-danger btn-sm delete-appt-btn" data-id="${app._id}" style="background: #dc3545; color: white; border: none; padding: 4px 8px; cursor: pointer; border-radius: 4px;" title="Delete Booking"><i class="fas fa-trash"></i></button>
@@ -748,7 +962,7 @@ async function handleApptStatusUpdate(id, newStatus) {
     if (!confirm(`Are you sure you want to set this appointment status to ${newStatus}?`)) return;
 
     try {
-        const response = await fetch(`http://localhost:5000/api/appointments/${id}/status`, {
+        const response = await fetch(`http://127.0.0.1:5000/api/appointments/${id}/status`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status: newStatus })
@@ -765,7 +979,7 @@ async function handleApptStatusUpdate(id, newStatus) {
 
 async function handlePaymentToggle(id, targetPaymentStatus) {
     try {
-        const response = await fetch(`http://localhost:5000/api/appointments/${id}/status`, {
+        const response = await fetch(`http://127.0.0.1:5000/api/appointments/${id}/status`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ paymentStatus: targetPaymentStatus })
@@ -784,7 +998,7 @@ async function handleApptDelete(id) {
     if (!confirm('Are you sure you want to permanently delete this appointment?')) return;
 
     try {
-        const response = await fetch(`http://localhost:5000/api/appointments/${id}`, {
+        const response = await fetch(`http://127.0.0.1:5000/api/appointments/${id}`, {
             method: 'DELETE'
         });
 
@@ -800,20 +1014,308 @@ async function handleApptDelete(id) {
 function handleAppointmentSearch() {
     if (!appointmentSearchInput) return;
     const query = appointmentSearchInput.value.toLowerCase().trim();
-    
+
     const filtered = allAppointments.filter(app => {
         const patientName = app.patientName || (app.patientId && app.patientId.name) || '';
         const doctorName = (app.doctorId && app.doctorId.name) || '';
         const comments = app.comments || '';
-        
+
         return patientName.toLowerCase().includes(query) ||
-               doctorName.toLowerCase().includes(query) ||
-               comments.toLowerCase().includes(query);
+            doctorName.toLowerCase().includes(query) ||
+            comments.toLowerCase().includes(query);
     });
-    
+
     displayAppointments(filtered);
 }
 
 if (appointmentSearchInput) {
     appointmentSearchInput.addEventListener('input', handleAppointmentSearch);
+}
+
+/* ===========================
+   MESSAGES Logic
+   =========================== */
+const messagesTableBody = document.getElementById('messages-table-body');
+const messageSearchInput = document.getElementById('message-search-input');
+let allMessages = [];
+
+async function renderMessages() {
+    if (!messagesTableBody) return;
+
+    try {
+        const response = await fetch('http://127.0.0.1:5000/api/messages');
+        if (!response.ok) throw new Error('Failed to fetch messages');
+        allMessages = await response.json();
+
+        displayMessages(allMessages);
+    } catch (err) {
+        console.error('Error rendering messages:', err);
+        messagesTableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 2rem;">Error loading messages.</td></tr>`;
+    }
+}
+
+function displayMessages(messagesList) {
+    if (!messagesTableBody) return;
+    messagesTableBody.innerHTML = '';
+
+    if (messagesList.length === 0) {
+        messagesTableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 2rem;">No messages found.</td></tr>`;
+        return;
+    }
+
+    messagesList.forEach(msg => {
+        const tr = document.createElement('tr');
+
+        const dateStr = new Date(msg.createdAt).toLocaleDateString('en-US', {
+            year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+
+        tr.innerHTML = `
+            <td>
+                <strong>${msg.name}</strong>
+            </td>
+            <td>
+                <div style="font-size: 0.85rem;"><strong>${msg.email}</strong></div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">${msg.phone || 'N/A'}</div>
+                ${msg.project ? `<div style="font-size: 0.8rem; color: var(--text-secondary);">Project: ${msg.project}</div>` : ''}
+            </td>
+            <td>
+                <div style="font-weight: 600; font-size: 0.9rem; color: var(--text-main);">${msg.subject}</div>
+                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px; white-space: pre-line;">${msg.message}</div>
+            </td>
+            <td style="font-size: 0.85rem; white-space: nowrap;">${dateStr}</td>
+            <td class="text-right">
+                <button class="btn btn-danger btn-sm delete-msg-btn" data-id="${msg._id}" style="background: #dc3545; color: white; border: none; padding: 6px 10px; cursor: pointer; border-radius: 4px;"><i class="fas fa-trash"></i> Delete</button>
+            </td>
+        `;
+        messagesTableBody.appendChild(tr);
+    });
+
+    // Attach event listeners for delete
+    messagesTableBody.querySelectorAll('.delete-msg-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => handleMessageDelete(e.target.closest('button').dataset.id));
+    });
+}
+
+async function handleMessageDelete(id) {
+    if (!confirm('Are you sure you want to delete this message?')) return;
+
+    try {
+        const response = await fetch(`http://127.0.0.1:5000/api/messages/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) throw new Error('Failed to delete message');
+        alert('Message deleted successfully!');
+        renderMessages();
+    } catch (err) {
+        console.error(err);
+        alert(err.message);
+    }
+}
+
+function handleMessageSearch() {
+    if (!messageSearchInput) return;
+    const query = messageSearchInput.value.toLowerCase().trim();
+
+    const filtered = allMessages.filter(msg => {
+        const name = msg.name || '';
+        const email = msg.email || '';
+        const subject = msg.subject || '';
+        const message = msg.message || '';
+
+        return name.toLowerCase().includes(query) ||
+            email.toLowerCase().includes(query) ||
+            subject.toLowerCase().includes(query) ||
+            message.toLowerCase().includes(query);
+    });
+
+    displayMessages(filtered);
+}
+
+if (messageSearchInput) {
+    messageSearchInput.addEventListener('input', handleMessageSearch);
+}
+
+/* ===========================
+   COMMENTS Logic
+   =========================== */
+const COMMENTS_API_BASE = 'http://127.0.0.1:5000/api/comments';
+const commentsTableBody = document.getElementById('comments-table-body');
+const commentSearchInput = document.getElementById('comment-search-input');
+let allComments = [];
+
+async function renderComments() {
+    if (!commentsTableBody) return;
+
+    try {
+        const response = await fetch(COMMENTS_API_BASE);
+        if (!response.ok) throw new Error('Failed to fetch comments');
+        allComments = await response.json();
+
+        displayComments(allComments);
+    } catch (err) {
+        console.error('Error rendering comments:', err);
+        commentsTableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 2rem;">Error loading comments.</td></tr>`;
+    }
+}
+
+function displayComments(commentsList) {
+    if (!commentsTableBody) return;
+    commentsTableBody.innerHTML = '';
+
+    if (commentsList.length === 0) {
+        commentsTableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 2rem;">No comments found.</td></tr>`;
+        return;
+    }
+
+    commentsList.forEach(c => {
+        const tr = document.createElement('tr');
+
+        const dateStr = new Date(c.createdAt).toLocaleDateString('en-US', {
+            year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+
+        // Status Badge
+        let statusColor = '#495057';
+        let statusBg = '#f1f3f5';
+        if (c.status === 'approved') { statusColor = '#10b981'; statusBg = '#d1fae5'; }
+        else if (c.status === 'rejected') { statusColor = '#ef4444'; statusBg = '#fee2e2'; }
+        else if (c.status === 'pending') { statusColor = '#d97706'; statusBg = '#fef3c7'; }
+
+        const statusBadgeHTML = `
+            <span class="role-badge" style="background: ${statusBg}; color: ${statusColor}; font-weight: 600;">
+                ${c.status.charAt(0).toUpperCase() + c.status.slice(1)}
+            </span>
+        `;
+
+        // Action Buttons
+        let actionsHTML = '';
+        if (c.status === 'pending') {
+            actionsHTML = `
+                <button class="btn btn-primary btn-sm approve-comment-btn" data-id="${c._id}" style="background: #10b981; color: white; border: none; padding: 4px 8px; cursor: pointer; border-radius: 4px; margin-right: 4px;"><i class="fas fa-check"></i> Approve</button>
+                <button class="btn btn-danger btn-sm reject-comment-btn" data-id="${c._id}" style="background: #e74c3c; color: white; border: none; padding: 4px 8px; cursor: pointer; border-radius: 4px; margin-right: 4px;"><i class="fas fa-times"></i> Reject</button>
+            `;
+        } else if (c.status === 'approved') {
+            actionsHTML = `
+                <button class="btn btn-danger btn-sm reject-comment-btn" data-id="${c._id}" style="background: #e74c3c; color: white; border: none; padding: 4px 8px; cursor: pointer; border-radius: 4px; margin-right: 4px;"><i class="fas fa-times"></i> Reject</button>
+            `;
+        } else if (c.status === 'rejected') {
+            actionsHTML = `
+                <button class="btn btn-primary btn-sm approve-comment-btn" data-id="${c._id}" style="background: #10b981; color: white; border: none; padding: 4px 8px; cursor: pointer; border-radius: 4px; margin-right: 4px;"><i class="fas fa-check"></i> Approve</button>
+            `;
+        }
+
+        // Admin can always delete
+        actionsHTML += `
+            <button class="btn btn-danger btn-sm delete-comment-btn" data-id="${c._id}" style="background: #dc3545; color: white; border: none; padding: 4px 8px; cursor: pointer; border-radius: 4px;" title="Delete Comment"><i class="fas fa-trash"></i></button>
+        `;
+
+        let avatarHTML = '';
+        if (c.userId && c.userId.profilePicture) {
+            avatarHTML = `<img src="${c.userId.profilePicture}" alt="${c.userName}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; margin-right: 8px; vertical-align: middle;">`;
+        } else {
+            const initial = c.userName ? c.userName.charAt(0).toUpperCase() : 'U';
+            avatarHTML = `<div class="avatar" style="width: 32px; height: 32px; font-size: 0.85rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: #e2e8f0; color: #4b5563; font-weight: 600; margin-right: 8px; vertical-align: middle;">${initial}</div>`;
+        }
+
+        tr.innerHTML = `
+            <td class="td-flex" style="align-items: center;">
+                ${avatarHTML}
+                <div>
+                    <strong>${c.userName}</strong>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">${c.userEmail}</div>
+                </div>
+            </td>
+            <td>
+                <div style="font-weight: 600; font-size: 0.9rem; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${c.blogTitle}">
+                    ${c.blogTitle}
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">ID: ${c.blogId}</div>
+            </td>
+            <td>
+                <div style="font-size: 0.85rem; color: var(--text-main); max-width: 300px; word-break: break-word; white-space: pre-line;">${c.commentText}</div>
+            </td>
+            <td style="font-size: 0.85rem; white-space: nowrap;">${dateStr}</td>
+            <td>${statusBadgeHTML}</td>
+            <td class="text-right">
+                <div style="display: flex; justify-content: flex-end; align-items: center; gap: 4px;">
+                    ${actionsHTML}
+                </div>
+            </td>
+        `;
+        commentsTableBody.appendChild(tr);
+    });
+
+    // Event listeners
+    commentsTableBody.querySelectorAll('.approve-comment-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => handleCommentStatusUpdate(e.target.closest('button').dataset.id, 'approved'));
+    });
+
+    commentsTableBody.querySelectorAll('.reject-comment-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => handleCommentStatusUpdate(e.target.closest('button').dataset.id, 'rejected'));
+    });
+
+    commentsTableBody.querySelectorAll('.delete-comment-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => handleCommentDelete(e.target.closest('button').dataset.id));
+    });
+}
+
+async function handleCommentStatusUpdate(id, newStatus) {
+    if (!confirm(`Are you sure you want to set this comment status to ${newStatus}?`)) return;
+
+    try {
+        const response = await fetch(`${COMMENTS_API_BASE} /${id}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus })
+        });
+
+        if (!response.ok) throw new Error('Failed to update comment status');
+        alert(`Comment status updated to ${newStatus} !`);
+        renderComments();
+    } catch (err) {
+        console.error(err);
+        alert(err.message);
+    }
+}
+
+async function handleCommentDelete(id) {
+    if (!confirm('Are you sure you want to permanently delete this comment?')) return;
+
+    try {
+        const response = await fetch(`${COMMENTS_API_BASE}/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) throw new Error('Failed to delete comment');
+        alert('Comment deleted successfully!');
+        renderComments();
+    } catch (err) {
+        console.error(err);
+        alert(err.message);
+    }
+}
+
+function handleCommentSearch() {
+    if (!commentSearchInput) return;
+    const query = commentSearchInput.value.toLowerCase().trim();
+
+    const filtered = allComments.filter(c => {
+        const name = c.userName || '';
+        const email = c.userEmail || '';
+        const blogTitle = c.blogTitle || '';
+        const text = c.commentText || '';
+
+        return name.toLowerCase().includes(query) ||
+            email.toLowerCase().includes(query) ||
+            blogTitle.toLowerCase().includes(query) ||
+            text.toLowerCase().includes(query);
+    });
+
+    displayComments(filtered);
+}
+
+if (commentSearchInput) {
+    commentSearchInput.addEventListener('input', handleCommentSearch);
 }
