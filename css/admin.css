@@ -582,3 +582,170 @@ textarea.form-control {
 .doctor-card-actions button {
     flex: 1;
 }
+
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+}
+
+.toast-success {
+    background: #0f172a;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: auto;
+    border-left: 4px solid #10b981;
+}
+
+.toast-success.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast-icon {
+    color: #10b981;
+    font-size: 1.1rem;
+}
+
+/* Custom Confirmation Modal */
+.modal-confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-confirm-overlay.show {
+    opacity: 1;
+}
+
+.modal-confirm-card {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal-confirm-overlay.show .modal-confirm-card {
+    transform: scale(1);
+}
+
+.modal-confirm-icon {
+    font-size: 3rem;
+    color: var(--bs-primary);
+    margin-bottom: 1rem;
+}
+
+.modal-confirm-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.modal-confirm-message {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+}
+
+.modal-confirm-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+.modal-confirm-actions button {
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+}
+
+.modal-confirm-actions .btn-cancel {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.modal-confirm-actions .btn-cancel:hover {
+    background: #e2e8f0;
+}
+
+.modal-confirm-actions .btn-confirm {
+    background: var(--bs-primary);
+    color: white;
+}
+
+.modal-confirm-actions .btn-confirm:hover {
+    background: #0d47a1;
+}
+
+/* Status colors */
+.modal-confirm-overlay.approve .modal-confirm-icon {
+    color: #10b981;
+}
+
+.modal-confirm-overlay.approve .btn-confirm {
+    background: #10b981;
+}
+
+.modal-confirm-overlay.approve .btn-confirm:hover {
+    background: #059669;
+}
+
+.modal-confirm-overlay.reject .modal-confirm-icon {
+    color: #ef4444;
+}
+
+.modal-confirm-overlay.reject .btn-confirm {
+    background: #ef4444;
+}
+
+.modal-confirm-overlay.reject .btn-confirm:hover {
+    background: #dc2626;
+}
+
+.modal-confirm-overlay.delete .modal-confirm-icon {
+    color: #dc3545;
+}
+
+.modal-confirm-overlay.delete .btn-confirm {
+    background: #dc3545;
+}
+
+.modal-confirm-overlay.delete .btn-confirm:hover {
+    background: #bd2130;
+}

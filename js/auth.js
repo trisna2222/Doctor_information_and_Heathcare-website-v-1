@@ -47,19 +47,7 @@ async function handleLogin(event) {
     const password = form.password.value;
     const errorDiv = document.getElementById('auth-error');
 
-    // Check for Admin Login first
-    if (email === 'admin@gmail.com' && password === '123456') {
-        // Create an admin session object
-        const adminUser = {
-            name: 'Administrator',
-            email: 'admin@gmail.com',
-            role: 'admin'
-        };
-        localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(adminUser));
-        localStorage.setItem('currentUser', JSON.stringify(adminUser));
-        window.location.href = 'admin.html';
-        return;
-    }
+
 
     try {
         const response = await fetch(`${AUTH_API_URL}/login`, {
@@ -85,7 +73,11 @@ async function handleLogin(event) {
 function loginUser(user) {
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
     localStorage.setItem('currentUser', JSON.stringify(user));
-    window.location.href = 'index.html';
+    if (user.role === 'admin') {
+        window.location.href = 'admin.html';
+    } else {
+        window.location.href = 'index.html';
+    }
 }
 
 async function logoutUser() {
@@ -139,7 +131,7 @@ function updateNavbar() {
 
     const isUL = navMenu.tagName.toUpperCase() === 'UL';
     let container;
-    
+
     if (isUL) {
         container = document.createElement('li');
     } else {
@@ -154,7 +146,7 @@ function updateNavbar() {
         } else {
             avatarHTML = `<i class="fas fa-user-circle" style="color: var(--bs-primary); font-size: 1.25rem; margin-right: 8px; vertical-align: middle;"></i>`;
         }
-        
+
         const firstName = currentUser.name ? currentUser.name.split(' ')[0] : 'User';
         container.innerHTML = `<a href="profile.html" class="nav-link-item" style="color: var(--bs-primary); font-weight: bold; display: inline-flex; align-items: center;">${avatarHTML}Hello, ${firstName}</a>`;
     } else {

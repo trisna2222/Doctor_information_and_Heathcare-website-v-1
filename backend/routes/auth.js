@@ -46,6 +46,7 @@ router.post('/register', async (req, res) => {
             id: newUser._id,
             name: newUser.name,
             email: newUser.email,
+            profilePicture: newUser.profilePicture || "",
             joined: newUser.createdAt,
             createdAt: newUser.createdAt
         });
@@ -64,7 +65,19 @@ router.post('/login', async (req, res) => {
         }
 
         // Find user by email
-        const user = await User.findOne({ email });
+        let user = await User.findOne({ email });
+        if (!user && email.toLowerCase() === 'admin@gmail.com') {
+            // Seed the admin user if not exists
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash('123456', salt);
+            const newAdmin = new User({
+                name: 'Administrator',
+                email: 'admin@gmail.com',
+                password: hashedPassword
+            });
+            user = await newAdmin.save();
+        }
+
         if (!user) {
             return res.status(400).json({ message: "Invalid email or password" });
         }
@@ -87,6 +100,8 @@ router.post('/login', async (req, res) => {
             id: user._id,
             name: user.name,
             email: user.email,
+            profilePicture: user.profilePicture || "",
+            role: user.email.toLowerCase() === 'admin@gmail.com' ? 'admin' : 'user',
             joined: user.createdAt,
             createdAt: user.createdAt
         });
@@ -117,6 +132,27 @@ router.post('/logout', async (req, res) => {
     }
 });
 
+// Get admin user ID
+router.get('/admin-id', async (req, res) => {
+    try {
+        let user = await User.findOne({ email: 'admin@gmail.com' });
+        if (!user) {
+            // Seed the admin user if not exists
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash('123456', salt);
+            const newAdmin = new User({
+                name: 'Administrator',
+                email: 'admin@gmail.com',
+                password: hashedPassword
+            });
+            user = await newAdmin.save();
+        }
+        res.json({ id: user._id });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 // Get user profile details
 router.get('/profile/:id', async (req, res) => {
     try {
@@ -132,6 +168,7 @@ router.get('/profile/:id', async (req, res) => {
             gender: user.gender || "",
             address: user.address || "",
             profilePicture: user.profilePicture || "",
+            role: user.email.toLowerCase() === 'admin@gmail.com' ? 'admin' : 'user',
             joined: user.createdAt,
             createdAt: user.createdAt
         });
@@ -153,6 +190,11 @@ router.put('/profile/:id', async (req, res) => {
         const user = await User.findById(req.params.id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
+        }
+        // Prevent changing admin's email to maintain admin role privileges
+        const isAdmin = user.email.toLowerCase() === 'admin@gmail.com';
+        if (isAdmin && email.toLowerCase() !== 'admin@gmail.com') {
+            return res.status(400).json({ message: "Administrator email cannot be changed" });
         }
 
         // Check if email already in use by another user
@@ -189,6 +231,7 @@ router.put('/profile/:id', async (req, res) => {
             gender: user.gender,
             address: user.address,
             profilePicture: user.profilePicture,
+            role: user.email.toLowerCase() === 'admin@gmail.com' ? 'admin' : 'user',
             joined: user.createdAt,
             createdAt: user.createdAt
         });

@@ -69,8 +69,8 @@
             <header class="top-header">
                 <h1 id="page-title">Doctors Management</h1>
                 <div class="user-profile">
-                    <div class="avatar">A</div>
-                    <span>Admin User</span>
+                    <div class="avatar" id="admin-avatar">A</div>
+                    <span id="admin-name">Admin User</span>
                 </div>
             </header>
 
@@ -467,6 +467,24 @@
                 <button type="submit" class="btn btn-primary">Save Department</button>
             </div>
         </form>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Dynamic Confirmation Modal -->
+    <div id="confirm-modal" class="modal-confirm-overlay" style="display: none;">
+        <div class="modal-confirm-card">
+            <div class="modal-confirm-icon">
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <h3 class="modal-confirm-title">Are you sure?</h3>
+            <p class="modal-confirm-message">Do you really want to proceed with this action?</p>
+            <div class="modal-confirm-actions">
+                <button type="button" class="btn btn-cancel" id="confirm-modal-cancel">Cancel</button>
+                <button type="button" class="btn btn-confirm" id="confirm-modal-submit">Yes, Proceed</button>
+            </div>
+        </div>
     </div>
 
     <!-- Logic -->

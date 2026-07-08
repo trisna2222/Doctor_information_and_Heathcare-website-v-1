@@ -1,3 +1,31 @@
+// Check Admin Authentication & Load Profile Photo in Header
+(function () {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || localStorage.getItem('medicoz_current_user'));
+
+    if (!currentUser || currentUser.role !== 'admin') {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // Initialize admin name and avatar
+    document.addEventListener('DOMContentLoaded', () => {
+        const adminNameSpan = document.getElementById('admin-name');
+        const adminAvatarDiv = document.getElementById('admin-avatar');
+
+        if (adminNameSpan) {
+            adminNameSpan.textContent = currentUser.name || 'Admin User';
+        }
+
+        if (adminAvatarDiv) {
+            if (currentUser.profilePicture) {
+                adminAvatarDiv.innerHTML = `<img src="${currentUser.profilePicture}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+            } else {
+                adminAvatarDiv.textContent = (currentUser.name || 'Admin')[0].toUpperCase();
+            }
+        }
+    });
+})();
+
 /* 
    Assumes doctors.js and blog-manager.js have already been loaded 
    and have attached functions to the window object.
@@ -181,6 +209,7 @@ async function openEditDocModal(id) {
 async function handleDocDelete(id) {
     if (confirm('Are you sure you want to delete this doctor?')) {
         await window.deleteDoctor(id);
+        showToast('Doctor deleted successfully!');
         renderDoctors();
     }
 }
@@ -346,6 +375,7 @@ function openEditBlogModal(id) {
 function handleBlogDelete(id) {
     if (confirm('Are you sure you want to delete this post?')) {
         window.deleteBlog(id);
+        showToast('Blog post deleted successfully!');
         renderBlogs();
     }
 }
@@ -502,6 +532,7 @@ async function openEditDeptModal(id) {
 async function handleDeptDelete(id) {
     if (confirm('Are you sure you want to delete this department?')) {
         await window.deleteDepartment(id);
+        showToast('Department deleted successfully!');
         renderDepartments();
     }
 }
@@ -772,12 +803,12 @@ async function handleApproveApplication(id) {
 
         if (!response.ok) throw new Error(data.message || 'Failed to approve application');
 
-        alert('Application approved successfully!');
+        showToast('Application approved successfully!');
         renderApplications();
         renderDoctors(); // Reload doctors list too
     } catch (err) {
         console.error(err);
-        alert(err.message);
+        showToast(err.message);
     }
 }
 
@@ -792,11 +823,11 @@ async function handleRejectApplication(id) {
 
         if (!response.ok) throw new Error(data.message || 'Failed to reject application');
 
-        alert('Application rejected successfully!');
+        showToast('Application rejected successfully!');
         renderApplications();
     } catch (err) {
         console.error(err);
-        alert(err.message);
+        showToast(err.message);
     }
 }
 
@@ -969,11 +1000,11 @@ async function handleApptStatusUpdate(id, newStatus) {
         });
 
         if (!response.ok) throw new Error('Failed to update status');
-        alert(`Appointment status updated to ${newStatus}!`);
+        showToast(`Appointment status updated to ${newStatus}!`);
         renderAppointments();
     } catch (err) {
         console.error(err);
-        alert(err.message);
+        showToast(err.message);
     }
 }
 
@@ -986,11 +1017,11 @@ async function handlePaymentToggle(id, targetPaymentStatus) {
         });
 
         if (!response.ok) throw new Error('Failed to toggle payment status');
-        alert(`Payment status set to ${targetPaymentStatus}!`);
+        showToast(`Payment status set to ${targetPaymentStatus}!`);
         renderAppointments();
     } catch (err) {
         console.error(err);
-        alert(err.message);
+        showToast(err.message);
     }
 }
 
@@ -1003,11 +1034,11 @@ async function handleApptDelete(id) {
         });
 
         if (!response.ok) throw new Error('Failed to delete appointment');
-        alert('Appointment deleted successfully!');
+        showToast('Appointment deleted successfully!');
         renderAppointments();
     } catch (err) {
         console.error(err);
-        alert(err.message);
+        showToast(err.message);
     }
 }
 
@@ -1106,11 +1137,11 @@ async function handleMessageDelete(id) {
         });
 
         if (!response.ok) throw new Error('Failed to delete message');
-        alert('Message deleted successfully!');
+        showToast('Message deleted successfully!');
         renderMessages();
     } catch (err) {
         console.error(err);
-        alert(err.message);
+        showToast(err.message);
     }
 }
 
@@ -1262,26 +1293,44 @@ function displayComments(commentsList) {
 }
 
 async function handleCommentStatusUpdate(id, newStatus) {
-    if (!confirm(`Are you sure you want to set this comment status to ${newStatus}?`)) return;
+    const isApproved = newStatus === 'approved';
+    const actionWord = isApproved ? 'Approve' : 'Reject';
+    const actionType = isApproved ? 'approve' : 'reject';
+
+    const confirmed = await showConfirmModal({
+        title: `${actionWord} Comment?`,
+        message: `Are you sure you want to set this comment status to ${newStatus}?`,
+        type: actionType,
+        confirmText: `Yes, ${actionWord}`
+    });
+
+    if (!confirmed) return;
 
     try {
-        const response = await fetch(`${COMMENTS_API_BASE} /${id}/status`, {
+        const response = await fetch(`${COMMENTS_API_BASE}/${id}/status`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status: newStatus })
         });
 
         if (!response.ok) throw new Error('Failed to update comment status');
-        alert(`Comment status updated to ${newStatus} !`);
+        showToast(`Comment status updated to ${newStatus}!`);
         renderComments();
     } catch (err) {
         console.error(err);
-        alert(err.message);
+        showToast(err.message);
     }
 }
 
 async function handleCommentDelete(id) {
-    if (!confirm('Are you sure you want to permanently delete this comment?')) return;
+    const confirmed = await showConfirmModal({
+        title: 'Delete Comment?',
+        message: 'Are you sure you want to permanently delete this comment?',
+        type: 'delete',
+        confirmText: 'Yes, Delete'
+    });
+
+    if (!confirmed) return;
 
     try {
         const response = await fetch(`${COMMENTS_API_BASE}/${id}`, {
@@ -1289,11 +1338,11 @@ async function handleCommentDelete(id) {
         });
 
         if (!response.ok) throw new Error('Failed to delete comment');
-        alert('Comment deleted successfully!');
+        showToast('Comment deleted successfully!');
         renderComments();
     } catch (err) {
         console.error(err);
-        alert(err.message);
+        showToast(err.message);
     }
 }
 
@@ -1318,4 +1367,75 @@ function handleCommentSearch() {
 
 if (commentSearchInput) {
     commentSearchInput.addEventListener('input', handleCommentSearch);
+}
+
+function showToast(message) {
+    const toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast-success';
+    toast.innerHTML = `<i class="fas fa-check-circle toast-icon"></i> <span>${message}</span>`;
+    toastContainer.appendChild(toast);
+
+    // Trigger animation
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 50);
+
+    // Hide & auto-remove toast element
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+        }, 400);
+    }, 3000);
+}
+
+function showConfirmModal({ title, message, type = 'primary', confirmText = 'Yes, Proceed' }) {
+    return new Promise((resolve) => {
+        const overlay = document.getElementById('confirm-modal');
+        if (!overlay) return resolve(false);
+
+        // Set content
+        overlay.querySelector('.modal-confirm-title').textContent = title;
+        overlay.querySelector('.modal-confirm-message').textContent = message;
+
+        const submitBtn = document.getElementById('confirm-modal-submit');
+        submitBtn.textContent = confirmText;
+
+        // Set type classes
+        overlay.className = 'modal-confirm-overlay';
+        if (type === 'approve') overlay.classList.add('approve');
+        else if (type === 'reject') overlay.classList.add('reject');
+        else if (type === 'delete') overlay.classList.add('delete');
+
+        // Show modal
+        overlay.style.display = 'flex';
+        setTimeout(() => overlay.classList.add('show'), 10);
+
+        // Bind events
+        const cancelBtn = document.getElementById('confirm-modal-cancel');
+
+        const cleanUp = () => {
+            overlay.classList.remove('show');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 300);
+            submitBtn.removeEventListener('click', onConfirm);
+            cancelBtn.removeEventListener('click', onCancel);
+        };
+
+        const onConfirm = () => {
+            cleanUp();
+            resolve(true);
+        };
+
+        const onCancel = () => {
+            cleanUp();
+            resolve(false);
+        };
+
+        submitBtn.addEventListener('click', onConfirm);
+        cancelBtn.addEventListener('click', onCancel);
+    });
 }
