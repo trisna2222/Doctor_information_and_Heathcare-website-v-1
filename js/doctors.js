@@ -1,71 +1,57 @@
-/* Relies on window.initialDoctors from doctor-data.js */
+const API_BASE = 'http://localhost:5000/api';
 
-const DOC_STORAGE_KEY = 'medicoz_doctors';
-
-// Always update from source of truth (file system scan)
-// Only initialize if not already present, so we don't overwrite user changes
-if (!localStorage.getItem(DOC_STORAGE_KEY) && window.initialDoctors) {
-    localStorage.setItem(DOC_STORAGE_KEY, JSON.stringify(window.initialDoctors));
-} else if (localStorage.getItem(DOC_STORAGE_KEY) && window.initialDoctors) {
-    // Migration: Check if bio is missing in local data and fill it from initialDoctors with matching ID
-    const localDoctors = JSON.parse(localStorage.getItem(DOC_STORAGE_KEY));
-    let updated = false;
-
-    localDoctors.forEach(doc => {
-        const initialDoc = window.initialDoctors.find(idoc => idoc.id === doc.id);
-        if (initialDoc) {
-            // Sync specific fields that should be kept up-to-date from code
-            if (!doc.filename || doc.filename !== initialDoc.filename) {
-                doc.filename = initialDoc.filename;
-                updated = true;
-            }
-            if (!doc.image && initialDoc.image) {
-                doc.image = initialDoc.image;
-                updated = true;
-            }
-            if (!doc.bio && initialDoc.bio) {
-                doc.bio = initialDoc.bio;
-                updated = true;
-            }
-        }
-    });
-
-    if (updated) {
-        localStorage.setItem(DOC_STORAGE_KEY, JSON.stringify(localDoctors));
+window.getDoctors = async () => {
+    try {
+        const response = await fetch(`${API_BASE}/doctors`);
+        if (!response.ok) throw new Error('Failed to fetch doctors');
+        const data = await response.json();
+        // Map _id to id so frontend components keep working without changes
+        return data.map(doc => ({ ...doc, id: doc._id }));
+    } catch (err) {
+        console.error(err);
+        return window.initialDoctors || []; // Fallback to safe static data
     }
-}
-
-window.getDoctors = () => {
-    const doctors = localStorage.getItem(DOC_STORAGE_KEY);
-    return doctors ? JSON.parse(doctors) : (window.initialDoctors || []);
 };
 
-window.getDoctorById = (id) => {
-    const doctors = window.getDoctors();
+window.getDoctorById = async (id) => {
+    const doctors = await window.getDoctors();
     return doctors.find(doc => doc.id === id);
 };
 
-window.saveDoctor = (doctor) => {
-    const doctors = window.getDoctors();
-    const existingIndex = doctors.findIndex(d => d.id === doctor.id);
-
-    if (existingIndex >= 0) {
-        doctors[existingIndex] = doctor;
-    } else {
-        doctors.push(doctor);
+window.saveDoctor = async (doctor) => {
+    try {
+        const isUpdate = doctor.id && !doctor.id.startsWith('doc-'); // Native mongoose _id is a hex string
+        
+        const method = isUpdate ? 'PUT' : 'POST';
+        const url = isUpdate ? `${API_BASE}/doctors/${doctor.id}` : `${API_BASE}/doctors`;
+        
+        const response = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(doctor)
+        });
+        
+        if (!response.ok) throw new Error('Failed to save doctor');
+        return await response.json();
+    } catch (err) {
+        console.error(err);
     }
-
-    localStorage.setItem(DOC_STORAGE_KEY, JSON.stringify(doctors));
 };
 
-window.deleteDoctor = (id) => {
-    let doctors = window.getDoctors();
-    doctors = doctors.filter(doc => doc.id !== id);
-    localStorage.setItem(DOC_STORAGE_KEY, JSON.stringify(doctors));
+window.deleteDoctor = async (id) => {
+    try {
+        if (!id || id.startsWith('doc-')) return; // Probably static fallback data
+        const response = await fetch(`${API_BASE}/doctors/${id}`, {
+            method: 'DELETE'
+        });
+        if (!response.ok) throw new Error('Failed to delete doctor');
+    } catch (err) {
+        console.error(err);
+    }
 };
 
-window.getAllDepartments = () => {
-    const doctors = window.getDoctors();
+window.getAllDepartments = async () => {
+    const doctors = await window.getDoctors();
     const departments = [...new Set(doctors.map(d => d.department))];
     return departments;
 };

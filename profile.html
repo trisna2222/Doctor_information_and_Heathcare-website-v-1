@@ -156,6 +156,248 @@
             text-align: center;
             padding: 2rem;
         }
+
+        /* Premium Edit Profile Modal Styles */
+        .edit-profile-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(29, 42, 77, 0.45); /* dark blue overlay to match Medicoz primary palette */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .edit-profile-modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .edit-profile-modal-content {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 550px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .edit-profile-modal-overlay.show .edit-profile-modal-content {
+            transform: scale(1);
+        }
+
+        .edit-profile-modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafbfe;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+        }
+
+        .edit-profile-modal-header h3 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--bs-dark);
+            margin: 0;
+        }
+
+        .close-edit-modal {
+            background: #f1f3f7;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .close-edit-modal:hover {
+            background: #e74c3c;
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        .edit-profile-modal-body {
+            padding: 1.5rem;
+        }
+
+        .edit-form-group {
+            margin-bottom: 1.25rem;
+            text-align: left;
+        }
+
+        .edit-form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 0.5rem;
+        }
+
+        .edit-form-control {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            background-color: #fff;
+            color: #333;
+            transition: all 0.3s;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .edit-form-control:focus {
+            border-color: var(--bs-primary);
+            box-shadow: 0 0 0 3px rgba(19, 197, 221, 0.15);
+        }
+
+        .edit-password-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #888;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 2rem 0 1.25rem;
+        }
+
+        .edit-password-divider::before,
+        .edit-password-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .edit-password-divider:not(:empty)::before {
+            margin-right: .75em;
+        }
+
+        .edit-password-divider:not(:empty)::after {
+            margin-left: .75em;
+        }
+
+        .edit-profile-modal-footer {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: #fafbfe;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+        }
+
+        .edit-btn-primary {
+            background: var(--bs-primary);
+            color: #fff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .edit-btn-primary:hover {
+            background: #0fb2c8;
+            box-shadow: 0 4px 12px rgba(19, 197, 221, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .edit-btn-secondary {
+            background: #f1f3f7;
+            color: #4f5e71;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .edit-btn-secondary:hover {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .alert-error {
+            background-color: #fde8e8;
+            border: 1px solid #f8b4b4;
+            color: #9b1c1c;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 1.25rem;
+            font-size: 0.9rem;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Toast styles */
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+        }
+
+        .toast-success {
+            background: #10B981;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-bottom: 10px;
+        }
+
+        .toast-success.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            font-size: 1.25rem;
+        }
+
+        .apply-doctor-btn {
+            background: #2ecc71 !important;
+            color: #fff !important;
+            border: none !important;
+        }
+
+        .apply-doctor-btn:hover {
+            background: #27ae60 !important;
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3) !important;
+            transform: translateY(-1px) !important;
+        }
     </style>
 </head>
 
@@ -217,7 +459,7 @@
         <div class="profile-container">
             <div class="profile-header-bg">
                 <div class="profile-avatar-container">
-                    <div class="profile-avatar">
+                    <div class="profile-avatar" id="user-avatar-frame">
                         <i class="fas fa-user"></i>
                     </div>
                 </div>
@@ -234,32 +476,242 @@
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">Phone</span>
-                        <div class="detail-value">Not Added</div>
+                        <div class="detail-value" id="user-phone">Not Added</div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Gender</span>
+                        <div class="detail-value" id="user-gender">Not Added</div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Address</span>
+                        <div class="detail-value" id="user-address">Not Added</div>
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">Total Appointments</span>
-                        <div class="detail-value">0</div>
+                        <div class="detail-value" id="user-total-appointments">0</div>
                     </div>
                 </div>
 
-                <div class="profile-actions">
-                    <button class="action-btn edit-btn" onclick="alert('Edit profile feature coming soon!')">Edit
-                        Profile</button>
+                <div class="profile-actions" style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                    <button class="action-btn edit-btn" onclick="openEditModal()">Edit Profile</button>
+                    <button class="action-btn apply-doctor-btn" id="apply-doctor-btn" onclick="openApplyDoctorModal()" style="display: none;">Apply as Doctor</button>
                     <button class="action-btn logout-btn" onclick="logoutUser()">Logout</button>
                 </div>
             </div>
         </div>
 
-        <div class="appointment-history">
+        <div class="appointment-history" id="appointment-history-panel">
             <h3 class="history-title">Appointment History</h3>
-            <div class="empty-state">
-                <p>You haven't booked any appointments yet.</p>
-                <a href="appointment.html" class="service-btn" style="margin-top: 1rem; display: inline-block;">Book
-                    Now</a>
+            <div id="appointment-history-list">
+                <div class="empty-state">
+                    <p>You haven't booked any appointments yet.</p>
+                    <a href="appointment.html" class="service-btn" style="margin-top: 1rem; display: inline-block;">Book Now</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Doctor Dashboard Section -->
+        <div class="appointment-history" id="doctor-dashboard-container" style="display: none; margin-top: 2rem; border-top: 4px solid var(--bs-primary);">
+            <h3 class="history-title"><i class="fas fa-user-md"></i> Doctor Dashboard - Incoming Bookings</h3>
+            <div id="doctor-appointments-list">
+                <div class="empty-state">No patient bookings found.</div>
             </div>
         </div>
 
     </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="edit-profile-modal-overlay" id="edit-profile-modal">
+        <div class="edit-profile-modal-content">
+            <div class="edit-profile-modal-header">
+                <h3>Edit Profile Information</h3>
+                <button class="close-edit-modal" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="edit-profile-form" onsubmit="submitProfileEdit(event)">
+                <div class="edit-profile-modal-body">
+                    <div id="edit-profile-error" class="alert-error" style="display: none;"></div>
+                    
+                    <!-- Profile Picture Upload & Preview -->
+                    <div class="edit-form-group" style="text-align: center; margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Profile Picture</label>
+                        <div style="position: relative; display: inline-block; width: 100px; height: 100px; margin: 0 auto 0.75rem; border-radius: 50%; border: 3px solid var(--bs-primary); overflow: hidden; background: #f1f3f7; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                            <img id="avatar-preview" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                            <div id="avatar-placeholder" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #888; font-size: 2rem;">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                        <input type="file" id="edit-avatar" accept="image/*" style="display: none;" onchange="previewAvatar(event)">
+                        <div style="display: flex; justify-content: center; gap: 0.5rem;">
+                            <button type="button" class="edit-btn-secondary" style="padding: 6px 16px; font-size: 0.85rem;" onclick="document.getElementById('edit-avatar').click()"><i class="fas fa-camera" style="margin-right: 5px;"></i> Upload Photo</button>
+                            <button type="button" id="remove-avatar-btn" class="edit-btn-secondary" style="padding: 6px 16px; font-size: 0.85rem; color: #e74c3c; display: none;" onclick="removeSelectedAvatar()"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label for="edit-name">Full Name <span style="color:red;">*</span></label>
+                        <input type="text" id="edit-name" class="edit-form-control" required placeholder="Enter your full name">
+                    </div>
+                    
+                    <div class="edit-form-group">
+                        <label for="edit-email">Email Address <span style="color:red;">*</span></label>
+                        <input type="email" id="edit-email" class="edit-form-control" required placeholder="Enter your email address">
+                    </div>
+                    
+                    <div class="edit-form-group">
+                        <label for="edit-phone">Phone Number</label>
+                        <input type="tel" id="edit-phone" class="edit-form-control" placeholder="e.g. +88017XXXXXXXX">
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label for="edit-gender">Gender</label>
+                        <select id="edit-gender" class="edit-form-control">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label for="edit-address">Address</label>
+                        <textarea id="edit-address" class="edit-form-control" rows="2" placeholder="Enter your address"></textarea>
+                    </div>
+                    
+                    <div class="edit-password-divider">
+                        <span>Change Password (Optional)</span>
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label for="edit-password">New Password</label>
+                        <input type="password" id="edit-password" class="edit-form-control" placeholder="Leave blank to keep current">
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label for="edit-confirm-password">Confirm New Password</label>
+                        <input type="password" id="edit-confirm-password" class="edit-form-control" placeholder="Confirm your new password">
+                    </div>
+                </div>
+                <div class="edit-profile-modal-footer">
+                    <button type="button" class="edit-btn-secondary" onclick="closeEditModal()">Cancel</button>
+                    <button type="submit" class="edit-btn-primary" id="save-profile-btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Apply as Doctor Modal -->
+    <div class="edit-profile-modal-overlay" id="apply-doctor-modal">
+        <div class="edit-profile-modal-content">
+            <div class="edit-profile-modal-header">
+                <h3>Apply to Become a Doctor</h3>
+                <button type="button" class="close-edit-modal" onclick="closeApplyDoctorModal()">&times;</button>
+            </div>
+            <form id="apply-doctor-form" onsubmit="submitDoctorApplication(event)">
+                <div class="edit-profile-modal-body">
+                    <div id="apply-doctor-error" class="alert-error" style="display: none;"></div>
+                    
+                    <div class="edit-form-group">
+                        <label for="apply-name">Full Name <span style="color:red;">*</span></label>
+                        <input type="text" id="apply-name" class="edit-form-control" required readonly style="background: #f1f3f7; color: #666;">
+                    </div>
+                    
+                    <div class="edit-form-group">
+                        <label for="apply-email">Email Address <span style="color:red;">*</span></label>
+                        <input type="email" id="apply-email" class="edit-form-control" required readonly style="background: #f1f3f7; color: #666;">
+                    </div>
+                    
+                    <div class="edit-form-group">
+                        <label for="apply-phone">Phone Number <span style="color:red;">*</span></label>
+                        <input type="tel" id="apply-phone" class="edit-form-control" required readonly style="background: #f1f3f7; color: #666;">
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label for="apply-department">Department <span style="color:red;">*</span></label>
+                        <select id="apply-department" class="edit-form-control" required>
+                            <option value="">Select Department</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Neurology">Neurology</option>
+                            <option value="Orthopedics">Orthopedics</option>
+                            <option value="Gynecology">Gynecology</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                            <option value="Dermatology">Dermatology</option>
+                            <option value="Surgery">General Surgery</option>
+                            <option value="Internal Medicine">Internal Medicine</option>
+                        </select>
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label for="apply-role">Designation / Role <span style="color:red;">*</span></label>
+                        <input type="text" id="apply-role" class="edit-form-control" required placeholder="e.g. Consultant Cardiologist">
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label for="apply-qualification">Qualifications <span style="color:red;">*</span></label>
+                        <input type="text" id="apply-qualification" class="edit-form-control" required placeholder="e.g. MBBS, FCPS, MD (Cardiology)">
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label for="apply-fee">Consultation Fee (BDT) <span style="color:red;">*</span></label>
+                        <input type="number" id="apply-fee" class="edit-form-control" required placeholder="e.g. 1000">
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label for="apply-schedule">Visiting Hours / Schedule <span style="color:red;">*</span></label>
+                        <input type="text" id="apply-schedule" class="edit-form-control" required placeholder="e.g. Sat, Mon, Wed: 6:00 PM - 9:00 PM">
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label for="apply-bio">Professional Bio / Description</label>
+                        <textarea id="apply-bio" class="edit-form-control" rows="3" placeholder="Provide a brief description of your professional background..."></textarea>
+                    </div>
+                </div>
+                <div class="edit-profile-modal-footer">
+                    <button type="button" class="edit-btn-secondary" onclick="closeApplyDoctorModal()">Cancel</button>
+                    <button type="submit" class="edit-btn-primary" id="submit-application-btn" style="background: #2ecc71;">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Review and Rating Modal -->
+    <div class="edit-profile-modal-overlay" id="review-modal">
+        <div class="edit-profile-modal-content" style="max-width: 450px;">
+            <div class="edit-profile-modal-header">
+                <h3>Leave a Review</h3>
+                <button type="button" class="close-edit-modal" onclick="closeReviewModal()">&times;</button>
+            </div>
+            <form id="review-form" onsubmit="submitDoctorReview(event)">
+                <div class="edit-profile-modal-body">
+                    <input type="hidden" id="review-doctor-id">
+                    <input type="hidden" id="review-appointment-id">
+                    
+                    <div class="edit-form-group" style="text-align: center;">
+                        <label style="font-weight: 700; margin-bottom: 0.5rem; display: block;">Select Rating:</label>
+                        <div class="star-rating-selector" style="font-size: 2rem; color: #cbd5e1; cursor: pointer; display: flex; justify-content: center; gap: 8px;">
+                            <i class="fas fa-star star-btn" data-rating="1" onclick="setRating(1)"></i>
+                            <i class="fas fa-star star-btn" data-rating="2" onclick="setRating(2)"></i>
+                            <i class="fas fa-star star-btn" data-rating="3" onclick="setRating(3)"></i>
+                            <i class="fas fa-star star-btn" data-rating="4" onclick="setRating(4)"></i>
+                            <i class="fas fa-star star-btn" data-rating="5" onclick="setRating(5)"></i>
+                        </div>
+                        <input type="hidden" id="review-rating-value" value="0">
+                    </div>
+
+                    <div class="edit-form-group" style="margin-top: 1.5rem;">
+                        <label for="review-comment">Your Feedback</label>
+                        <textarea id="review-comment" class="edit-form-control" rows="4" placeholder="Write your feedback about the doctor's service..."></textarea>
+                    </div>
+                </div>
+                <div class="edit-profile-modal-footer">
+                    <button type="button" class="edit-btn-secondary" onclick="closeReviewModal()">Cancel</button>
+                    <button type="submit" class="edit-btn-primary" id="submit-review-btn">Submit Review</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
 
     <!-- Semantic Footer -->
     <footer class="site-footer">
@@ -310,21 +762,768 @@
     <script src="js/auth.js"></script>
     <script>
         // Profile logic
-        document.addEventListener('DOMContentLoaded', () => {
-            const user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY));
+        let currentUser = null;
+        let selectedAvatarBase64 = null;
+        let activeRating = 0;
 
-            if (!user) {
-                // Redirect if not logged in
-                window.location.href = 'login.html';
-                return;
+        const PROFILE_API_URL = 'http://localhost:5000/api';
+        const PROFILE_AUTH_URL = 'http://localhost:5000/api/auth';
+
+        // Fetch latest profile details from backend
+        async function fetchUserProfile(userId) {
+            try {
+                const response = await fetch(`${PROFILE_AUTH_URL}/profile/${userId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    // Sync backend data with local storage
+                    currentUser = { ...currentUser, ...data };
+                    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(currentUser));
+                    
+                    // Update UI details
+                    updateProfileUI(currentUser);
+                }
+            } catch (err) {
+                console.error("Failed to fetch latest user profile:", err);
             }
+        }
 
+        function updateProfileUI(user) {
             document.getElementById('user-name').textContent = user.name;
             document.getElementById('user-email').textContent = user.email;
 
             if (user.joined) {
                 const date = new Date(user.joined);
                 document.getElementById('user-joined').textContent = date.toLocaleDateString();
+            }
+
+            document.getElementById('user-phone').textContent = user.phone || 'Not Added';
+            document.getElementById('user-gender').textContent = user.gender || 'Not Added';
+            document.getElementById('user-address').textContent = user.address || 'Not Added';
+
+            // Profile avatar image display
+            const avatarFrame = document.getElementById('user-avatar-frame');
+            if (user.profilePicture) {
+                avatarFrame.innerHTML = `<img src="${user.profilePicture}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+            } else {
+                avatarFrame.innerHTML = `<i class="fas fa-user"></i>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            currentUser = JSON.parse(localStorage.getItem(CURRENT_USER_KEY));
+
+            if (!currentUser) {
+                // Redirect if not logged in
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Fill UI with localStorage data first for immediate rendering
+            updateProfileUI(currentUser);
+
+            if (currentUser.role === 'admin') {
+                // Admin specific layout
+                document.getElementById('user-name').textContent = currentUser.name;
+                document.getElementById('user-email').textContent = currentUser.email;
+                document.getElementById('user-joined').textContent = 'System Account';
+                document.getElementById('user-phone').textContent = 'N/A';
+                document.getElementById('user-gender').textContent = 'N/A';
+                document.getElementById('user-address').textContent = 'N/A';
+                
+                // Hide edit button for administrator
+                const editBtn = document.querySelector('.edit-btn');
+                if (editBtn) editBtn.style.display = 'none';
+                
+                // Hide appointment history for admin
+                const historyPanel = document.getElementById('appointment-history-panel');
+                if (historyPanel) historyPanel.style.display = 'none';
+            } else if (currentUser.id) {
+                fetchUserProfile(currentUser.id);
+                checkDoctorApplicationStatus(currentUser.id);
+                fetchUserAppointments(currentUser.id);
+                checkIfDoctor(currentUser.id);
+            }
+        });
+
+        // Get user appointments list
+        async function fetchUserAppointments(userId) {
+            try {
+                const response = await fetch(`${PROFILE_API_URL}/appointments/user/${userId}`);
+                if (!response.ok) throw new Error('Failed to fetch appointments');
+                const appointments = await response.json();
+                
+                // Update total appointments count in UI
+                document.getElementById('user-total-appointments').textContent = appointments.length;
+
+                const listContainer = document.getElementById('appointment-history-list');
+                if (appointments.length === 0) {
+                    listContainer.innerHTML = `
+                        <div class="empty-state">
+                            <p>You haven't booked any appointments yet.</p>
+                            <a href="appointment.html" class="service-btn" style="margin-top: 1rem; display: inline-block;">Book Now</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = `
+                    <div style="overflow-x: auto; margin-top: 1.5rem;">
+                        <table class="data-table" style="width:100%; border-collapse: collapse; text-align: left;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid #eee; padding-bottom: 8px;">
+                                    <th style="padding: 12px 8px;">Doctor</th>
+                                    <th style="padding: 12px 8px;">Date</th>
+                                    <th style="padding: 12px 8px;">Fee</th>
+                                    <th style="padding: 12px 8px;">Payment</th>
+                                    <th style="padding: 12px 8px;">Status</th>
+                                    <th style="padding: 12px 8px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                appointments.forEach(app => {
+                    const doc = app.doctorId || {};
+                    const dateStr = new Date(app.date).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'short', day: 'numeric'
+                    });
+
+                    // Payment status badge
+                    const paymentBadge = app.paymentStatus === 'Paid'
+                        ? `<span style="background: #e6fcf5; color: #0ca678; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: 600;">Paid</span>`
+                        : `<span style="background: #fff0f6; color: #d6336c; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: 600;">Unpaid</span>`;
+
+                    // Booking status badge
+                    let statusColor = '#495057';
+                    let statusBg = '#f1f3f5';
+                    if (app.status === 'Approved') { statusColor = '#2b8a3e'; statusBg = '#ebfbee'; }
+                    else if (app.status === 'Completed') { statusColor = '#1c7ed6'; statusBg = '#e7f5ff'; }
+                    else if (app.status === 'Cancelled') { statusColor = '#c92a2a'; statusBg = '#fff5f5'; }
+
+                    const statusBadge = `<span style="background: ${statusBg}; color: ${statusColor}; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: 600;">${app.status}</span>`;
+
+                    // Actions
+                    let actionHtml = '';
+                    if (app.status === 'Completed') {
+                        actionHtml = `<button onclick="openReviewModal('${doc._id || doc.id}', '${app._id}')" class="service-btn" style="padding: 6px 12px; font-size: 0.8rem; background: var(--bs-secondary); cursor: pointer;"><i class="fas fa-star"></i> Leave Review</button>`;
+                    } else if (app.status === 'Pending' || app.status === 'Approved') {
+                        actionHtml = `<button onclick="updateAppointmentStatus('${app._id}', 'Cancelled')" class="service-btn" style="padding: 6px 12px; font-size: 0.8rem; background: #e74c3c; cursor: pointer;">Cancel</button>`;
+                    } else {
+                        actionHtml = `<span style="font-size: 0.85rem; color:#888; font-style:italic;">No Actions</span>`;
+                    }
+
+                    html += `
+                        <tr style="border-bottom: 1px solid #f0f0f0;">
+                            <td style="padding: 12px 8px; display: flex; align-items: center; gap: 8px;">
+                                <img src="${doc.image || 'img/default-doctor.jpg'}" style="width:35px; height:35px; border-radius:50%; object-fit:cover;" onerror="this.src='img/default-doctor.jpg'">
+                                <div>
+                                    <strong style="display:block;">${doc.name || 'Unknown Doctor'}</strong>
+                                    <span style="font-size:0.8rem; color:#888;">${doc.department || ''}</span>
+                                </div>
+                            </td>
+                            <td style="padding: 12px 8px;">${dateStr}</td>
+                            <td style="padding: 12px 8px;">${app.fee} BDT</td>
+                            <td style="padding: 12px 8px;">${paymentBadge}</td>
+                            <td style="padding: 12px 8px;">${statusBadge}</td>
+                            <td style="padding: 12px 8px;">${actionHtml}</td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                listContainer.innerHTML = html;
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Check if logged in user is a registered Doctor
+        async function checkIfDoctor(userId) {
+            try {
+                const response = await fetch(`${PROFILE_API_URL}/doctors`);
+                if (response.ok) {
+                    const doctors = await response.json();
+                    // Match by userId in doctor records
+                    const matchedDoc = doctors.find(d => d.userId === userId);
+                    if (matchedDoc) {
+                        // Display Doctor Dashboard
+                        document.getElementById('doctor-dashboard-container').style.display = 'block';
+                        fetchDoctorDashboard(matchedDoc.id);
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Fetch bookings for Doctor Dashboard
+        async function fetchDoctorDashboard(doctorId) {
+            try {
+                const response = await fetch(`${PROFILE_API_URL}/appointments/doctor/${doctorId}`);
+                if (!response.ok) throw new Error('Failed to fetch doctor appointments');
+                const appointments = await response.json();
+
+                const listContainer = document.getElementById('doctor-appointments-list');
+                if (appointments.length === 0) {
+                    listContainer.innerHTML = `<div class="empty-state">No patient bookings found.</div>`;
+                    return;
+                }
+
+                let html = `
+                    <div style="overflow-x: auto; margin-top: 1.5rem;">
+                        <table class="data-table" style="width:100%; border-collapse: collapse; text-align: left;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid #eee; padding-bottom: 8px;">
+                                    <th style="padding: 12px 8px;">Patient Info</th>
+                                    <th style="padding: 12px 8px;">Appt Date</th>
+                                    <th style="padding: 12px 8px;">Comments</th>
+                                    <th style="padding: 12px 8px;">Payment</th>
+                                    <th style="padding: 12px 8px;">Status</th>
+                                    <th style="padding: 12px 8px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                appointments.forEach(app => {
+                    const dateStr = new Date(app.date).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'short', day: 'numeric'
+                    });
+
+                    // Payment status badge
+                    const paymentBadge = app.paymentStatus === 'Paid'
+                        ? `<span style="background: #e6fcf5; color: #0ca678; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: 600;">Paid</span>`
+                        : `<span style="background: #fff0f6; color: #d6336c; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: 600;">Unpaid</span>`;
+
+                    // Booking status badge
+                    let statusColor = '#495057';
+                    let statusBg = '#f1f3f5';
+                    if (app.status === 'Approved') { statusColor = '#2b8a3e'; statusBg = '#ebfbee'; }
+                    else if (app.status === 'Completed') { statusColor = '#1c7ed6'; statusBg = '#e7f5ff'; }
+                    else if (app.status === 'Cancelled') { statusColor = '#c92a2a'; statusBg = '#fff5f5'; }
+
+                    const statusBadge = `<span style="background: ${statusBg}; color: ${statusColor}; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: 600;">${app.status}</span>`;
+
+                    // Actions
+                    let actionsHtml = '';
+                    if (app.status === 'Pending') {
+                        actionsHtml = `
+                            <button onclick="updateAppointmentStatus('${app._id}', 'Approved')" class="service-btn" style="padding: 4px 8px; font-size: 0.8rem; background: #2ecc71; border: none; cursor: pointer; margin-right: 4px;">Approve</button>
+                            <button onclick="updateAppointmentStatus('${app._id}', 'Cancelled')" class="service-btn" style="padding: 4px 8px; font-size: 0.8rem; background: #e74c3c; border: none; cursor: pointer;">Cancel</button>
+                        `;
+                    } else if (app.status === 'Approved') {
+                        actionsHtml = `
+                            <button onclick="updateAppointmentStatus('${app._id}', 'Completed')" class="service-btn" style="padding: 4px 8px; font-size: 0.8rem; background: var(--bs-primary); border: none; cursor: pointer; margin-right: 4px;">Complete</button>
+                            <button onclick="updateAppointmentStatus('${app._id}', 'Cancelled')" class="service-btn" style="padding: 4px 8px; font-size: 0.8rem; background: #e74c3c; border: none; cursor: pointer;">Cancel</button>
+                        `;
+                    } else {
+                        actionsHtml = `<span style="font-size: 0.85rem; color:#888; font-style:italic;">No Actions</span>`;
+                    }
+
+                    html += `
+                        <tr style="border-bottom: 1px solid #f0f0f0;">
+                            <td style="padding: 12px 8px;">
+                                <strong style="display:block;">${app.patientName}</strong>
+                                <span style="font-size:0.8rem; color:#888; display:block;">Email: ${app.patientEmail}</span>
+                                <span style="font-size:0.8rem; color:#888; display:block;">Phone: ${app.patientPhone} (${app.patientGender})</span>
+                            </td>
+                            <td style="padding: 12px 8px;">${dateStr}</td>
+                            <td style="padding: 12px 8px; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${app.comments || ''}">${app.comments || 'No Comments'}</td>
+                            <td style="padding: 12px 8px;">${paymentBadge}</td>
+                            <td style="padding: 12px 8px;">${statusBadge}</td>
+                            <td style="padding: 12px 8px;">${actionsHtml}</td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                listContainer.innerHTML = html;
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Generic Appointment Status Updater
+        async function updateAppointmentStatus(id, newStatus) {
+            if (!confirm(`Are you sure you want to change status to ${newStatus}?`)) return;
+            try {
+                const response = await fetch(`${PROFILE_API_URL}/appointments/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                if (!response.ok) throw new Error('Failed to update status');
+                
+                showToast(`Appointment status updated to ${newStatus}!`);
+                
+                // Reload lists
+                if (currentUser && currentUser.id) {
+                    fetchUserAppointments(currentUser.id);
+                    checkIfDoctor(currentUser.id);
+                }
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        // Review Modal Functions
+        function openReviewModal(doctorId, appointmentId) {
+            document.getElementById('review-doctor-id').value = doctorId;
+            document.getElementById('review-appointment-id').value = appointmentId;
+            document.getElementById('review-comment').value = '';
+            setRating(5); // Default rating
+            
+            const modal = document.getElementById('review-modal');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+        }
+
+        function closeReviewModal() {
+            const modal = document.getElementById('review-modal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        function setRating(rating) {
+            activeRating = rating;
+            document.getElementById('review-rating-value').value = rating;
+            
+            const stars = document.querySelectorAll('.star-btn');
+            stars.forEach((star, idx) => {
+                if (idx < rating) {
+                    star.style.color = '#ffc107'; // filled yellow star
+                } else {
+                    star.style.color = '#cbd5e1'; // grey star
+                }
+            });
+        }
+
+        async function submitDoctorReview(event) {
+            event.preventDefault();
+            const doctorId = document.getElementById('review-doctor-id').value;
+            const comment = document.getElementById('review-comment').value.trim();
+            const rating = Number(document.getElementById('review-rating-value').value);
+
+            if (rating === 0) {
+                alert('Please select a star rating');
+                return;
+            }
+
+            const btn = document.getElementById('submit-review-btn');
+            try {
+                btn.disabled = true;
+                btn.textContent = 'Submitting...';
+
+                const response = await fetch(`${PROFILE_API_URL}/reviews`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        patientId: currentUser.id,
+                        patientName: currentUser.name,
+                        doctorId,
+                        rating,
+                        comment
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to submit review');
+
+                showToast('Review submitted successfully!');
+                closeReviewModal();
+
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Submit Review';
+            }
+        }
+
+        // Image Selection & Preview
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Enforce file size check: max 2MB
+            if (file.size > 2 * 1024 * 1024) {
+                showModalError("Image file size should be less than 2MB");
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                selectedAvatarBase64 = e.target.result;
+                const previewImg = document.getElementById('avatar-preview');
+                const placeholder = document.getElementById('avatar-placeholder');
+                const removeBtn = document.getElementById('remove-avatar-btn');
+
+                previewImg.src = selectedAvatarBase64;
+                previewImg.style.display = 'block';
+                placeholder.style.display = 'none';
+                removeBtn.style.display = 'inline-block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeSelectedAvatar() {
+            selectedAvatarBase64 = "";
+            const previewImg = document.getElementById('avatar-preview');
+            const placeholder = document.getElementById('avatar-placeholder');
+            const removeBtn = document.getElementById('remove-avatar-btn');
+            
+            previewImg.src = '';
+            previewImg.style.display = 'none';
+            placeholder.style.display = 'flex';
+            removeBtn.style.display = 'none';
+            
+            document.getElementById('edit-avatar').value = ''; // Reset file input
+        }
+
+        // Modal triggers
+        function openEditModal() {
+            if (!currentUser || currentUser.role === 'admin') return;
+
+            document.getElementById('edit-name').value = currentUser.name || '';
+            document.getElementById('edit-email').value = currentUser.email || '';
+            document.getElementById('edit-phone').value = currentUser.phone || '';
+            document.getElementById('edit-gender').value = currentUser.gender || '';
+            document.getElementById('edit-address').value = currentUser.address || '';
+            document.getElementById('edit-password').value = '';
+            document.getElementById('edit-confirm-password').value = '';
+            
+            // Preview image init
+            selectedAvatarBase64 = currentUser.profilePicture || null;
+            const previewImg = document.getElementById('avatar-preview');
+            const placeholder = document.getElementById('avatar-placeholder');
+            const removeBtn = document.getElementById('remove-avatar-btn');
+            
+            if (selectedAvatarBase64) {
+                previewImg.src = selectedAvatarBase64;
+                previewImg.style.display = 'block';
+                placeholder.style.display = 'none';
+                removeBtn.style.display = 'inline-block';
+            } else {
+                previewImg.src = '';
+                previewImg.style.display = 'none';
+                placeholder.style.display = 'flex';
+                removeBtn.style.display = 'none';
+            }
+
+            document.getElementById('edit-avatar').value = ''; // Reset file input
+
+            // Hide error panel
+            const errorDiv = document.getElementById('edit-profile-error');
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+
+            const modal = document.getElementById('edit-profile-modal');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+        }
+
+        function closeEditModal() {
+            const modal = document.getElementById('edit-profile-modal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        async function submitProfileEdit(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('edit-name').value.trim();
+            const email = document.getElementById('edit-email').value.trim();
+            const phone = document.getElementById('edit-phone').value.trim();
+            const gender = document.getElementById('edit-gender').value;
+            const address = document.getElementById('edit-address').value.trim();
+            const password = document.getElementById('edit-password').value;
+            const confirmPassword = document.getElementById('edit-confirm-password').value;
+            
+            const errorDiv = document.getElementById('edit-profile-error');
+            const submitBtn = document.getElementById('save-profile-btn');
+
+            // Reset error panel
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+
+            // Input validations
+            if (!name || !email) {
+                showModalError("Name and Email are required");
+                return;
+            }
+
+            // Password matching validation
+            if (password) {
+                if (password !== confirmPassword) {
+                    showModalError("Passwords do not match");
+                    return;
+                }
+                if (password.length < 6) {
+                    showModalError("Password must be at least 6 characters long");
+                    return;
+                }
+            }
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Saving...';
+
+                const response = await fetch(`${PROFILE_AUTH_URL}/profile/${currentUser.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        phone,
+                        gender,
+                        address,
+                        profilePicture: selectedAvatarBase64 || "",
+                        password: password || undefined
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to update profile');
+                }
+
+                // Update current state
+                currentUser = { ...currentUser, ...data };
+                localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(currentUser));
+
+                // Redraw UI
+                updateProfileUI(currentUser);
+                
+                // Update navbar greeting name
+                if (typeof updateNavbar === 'function') {
+                    updateNavbar();
+                }
+
+                // Close modal
+                closeEditModal();
+
+                // Toast success popups
+                showToast("Profile updated successfully!");
+
+            } catch (err) {
+                showModalError(err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Save Changes';
+            }
+        }
+
+        function showModalError(msg) {
+            const errorDiv = document.getElementById('edit-profile-error');
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${msg}`;
+            errorDiv.style.display = 'flex';
+        }
+
+        function showToast(message) {
+            const toastContainer = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast-success';
+            toast.innerHTML = `<i class="fas fa-check-circle toast-icon"></i> <span>${message}</span>`;
+            toastContainer.appendChild(toast);
+
+            // Trigger animation
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 50);
+
+            // Hide & auto-remove toast element
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 400);
+            }, 3000);
+        }
+
+        // Fetch and check Doctor Application status
+        async function checkDoctorApplicationStatus(userId) {
+            const applyBtn = document.getElementById('apply-doctor-btn');
+            if (!applyBtn) return;
+
+            try {
+                const response = await fetch(`${PROFILE_AUTH_URL}/doctor-applications/user/${userId}`);
+                if (response.ok) {
+                    const app = await response.json();
+                    if (app) {
+                        if (app.status === 'pending') {
+                            applyBtn.textContent = 'Application Pending';
+                            applyBtn.disabled = true;
+                            applyBtn.style.background = '#f1c40f'; // yellow
+                            applyBtn.style.cursor = 'not-allowed';
+                            applyBtn.style.display = 'inline-block';
+                        } else if (app.status === 'approved') {
+                            applyBtn.textContent = 'Approved as Doctor';
+                            applyBtn.disabled = true;
+                            applyBtn.style.background = '#27ae60'; // dark green
+                            applyBtn.style.cursor = 'not-allowed';
+                            applyBtn.style.display = 'inline-block';
+                        } else if (app.status === 'rejected') {
+                            // Let them reapply
+                            applyBtn.textContent = 'Reapply as Doctor';
+                            applyBtn.disabled = false;
+                            applyBtn.style.background = '#e74c3c'; // red
+                            applyBtn.style.display = 'inline-block';
+                        }
+                    } else {
+                        // No application yet, show apply button
+                        applyBtn.textContent = 'Apply as Doctor';
+                        applyBtn.disabled = false;
+                        applyBtn.style.background = '#2ecc71'; // green
+                        applyBtn.style.display = 'inline-block';
+                    }
+                }
+            } catch (err) {
+                console.error("Error checking doctor application status:", err);
+            }
+        }
+
+        // Apply as Doctor Modals Trigger
+        function openApplyDoctorModal() {
+            if (!currentUser || currentUser.role === 'admin') return;
+
+            document.getElementById('apply-name').value = currentUser.name || '';
+            document.getElementById('apply-email').value = currentUser.email || '';
+            document.getElementById('apply-phone').value = currentUser.phone || '';
+            
+            // Reset fields
+            document.getElementById('apply-department').value = '';
+            document.getElementById('apply-role').value = '';
+            document.getElementById('apply-qualification').value = '';
+            document.getElementById('apply-fee').value = '';
+            document.getElementById('apply-schedule').value = '';
+            document.getElementById('apply-bio').value = '';
+            
+            // Hide errors
+            const errorDiv = document.getElementById('apply-doctor-error');
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+
+            const modal = document.getElementById('apply-doctor-modal');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+        }
+
+        function closeApplyDoctorModal() {
+            const modal = document.getElementById('apply-doctor-modal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        async function submitDoctorApplication(event) {
+            event.preventDefault();
+
+            const department = document.getElementById('apply-department').value;
+            const role = document.getElementById('apply-role').value.trim();
+            const qualification = document.getElementById('apply-qualification').value.trim();
+            const fee = parseFloat(document.getElementById('apply-fee').value);
+            const schedule = document.getElementById('apply-schedule').value.trim();
+            const bio = document.getElementById('apply-bio').value.trim();
+
+            const errorDiv = document.getElementById('apply-doctor-error');
+            const submitBtn = document.getElementById('submit-application-btn');
+
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+
+            if (!department || !role || !qualification || !fee || !schedule) {
+                showApplyError("All required fields must be filled out");
+                return;
+            }
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting...';
+
+                const response = await fetch(`${PROFILE_AUTH_URL}/doctor-applications/apply`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: currentUser.id,
+                        name: currentUser.name,
+                        email: currentUser.email,
+                        phone: currentUser.phone || "Not Set",
+                        department,
+                        role,
+                        qualification,
+                        fee,
+                        image: currentUser.profilePicture || "",
+                        bio,
+                        schedule
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to submit application');
+                }
+
+                closeApplyDoctorModal();
+                showToast("Application submitted successfully!");
+                
+                // Refresh status
+                checkDoctorApplicationStatus(currentUser.id);
+
+            } catch (err) {
+                showApplyError(err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Application';
+            }
+        }
+
+        function showApplyError(msg) {
+            const errorDiv = document.getElementById('apply-doctor-error');
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${msg}`;
+            errorDiv.style.display = 'flex';
+        }
+
+        // Close modal when clicking outside content area
+        window.addEventListener('click', (e) => {
+            const editModal = document.getElementById('edit-profile-modal');
+            const applyModal = document.getElementById('apply-doctor-modal');
+            const reviewModal = document.getElementById('review-modal');
+            if (e.target === editModal) {
+                closeEditModal();
+            }
+            if (e.target === applyModal) {
+                closeApplyDoctorModal();
+            }
+            if (e.target === reviewModal) {
+                closeReviewModal();
             }
         });
     </script>

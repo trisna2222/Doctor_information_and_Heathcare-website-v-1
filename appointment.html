@@ -13,6 +13,138 @@
 
     <!-- Main Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    
+    <style>
+        /* Payment Modal Overlay */
+        .payment-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(29, 42, 77, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .payment-modal-content {
+            background: #fff;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            position: relative;
+        }
+        .payment-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .payment-modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--bs-dark);
+            margin: 0;
+        }
+        .close-payment-modal {
+            font-size: 1.5rem;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: #888;
+        }
+        .close-payment-modal:hover {
+            color: #e74c3c;
+        }
+        .payment-summary {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        .summary-row:last-child {
+            margin-bottom: 0;
+            font-weight: 700;
+            color: var(--bs-primary);
+        }
+        .payment-methods {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .method-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .method-btn.active {
+            border-color: var(--bs-primary);
+            color: var(--bs-primary);
+            background: rgba(19, 197, 221, 0.05);
+        }
+        .method-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+        .payment-form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .payment-form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #555;
+        }
+        .payment-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .payment-input:focus {
+            border-color: var(--bs-primary);
+        }
+        .payment-submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bs-primary);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 1rem;
+        }
+        .payment-submit-btn:hover {
+            background: #0fb2c8;
+        }
+    </style>
 </head>
 
 <body>
@@ -121,36 +253,126 @@
                     <span class="app-form-subtitle">Get In Touch</span>
                     <h3 class="app-form-title">Get Appointment</h3>
 
-                    <form action="#">
+                    <form id="appointment-booking-form" onsubmit="handleBookingSubmit(event)">
                         <div class="app-form-grid">
-                            <input type="text" class="app-input" placeholder="First Name">
-                            <input type="email" class="app-input" placeholder="Email">
+                            <input type="text" id="app-name" class="app-input" required placeholder="Patient Name">
+                            <input type="email" id="app-email" class="app-input" required placeholder="Email Address">
 
-                            <input type="tel" class="app-input" placeholder="Phone">
-                            <select class="app-select">
-                                <option value="">Your Gender</option>
+                            <input type="tel" id="app-phone" class="app-input" required placeholder="Phone Number">
+                            <select id="app-gender" class="app-select" required>
+                                <option value="">Select Gender</option>
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                                 <option value="Other">Other</option>
                             </select>
 
-                            <input type="text" class="app-input" placeholder="mm/dd/yyyy">
-                            <select class="app-select">
-                                <option value="">Department</option>
+                            <input type="date" id="app-date" class="app-input" required style="line-height: normal; font-family: inherit;">
+                            <select id="app-dept" class="app-select" required onchange="filterDoctorsByDept()">
+                                <option value="">Select Department</option>
                                 <option value="Cardiology">Cardiology</option>
                                 <option value="Neurology">Neurology</option>
                                 <option value="Orthopedics">Orthopedics</option>
+                                <option value="Gynecology">Gynecology & Obstetrics</option>
+                                <option value="Pediatrics">Pediatrics</option>
+                                <option value="Dermatology">Dermatology</option>
+                                <option value="Surgery">General Surgery</option>
+                                <option value="Internal Medicine">Internal Medicine</option>
                             </select>
 
-                            <div class="full-width">
-                                <input type="text" class="app-input" placeholder="Write Comments">
+                            <select id="app-doctor" class="app-select full-width" required onchange="updateFeeDisplay()">
+                                <option value="">Select Doctor</option>
+                            </select>
+
+                            <div class="full-width" id="fee-display-container" style="display: none; background: rgba(19, 197, 221, 0.1); border-left: 4px solid var(--bs-primary); padding: 1rem; border-radius: 6px; font-weight: 700; text-align: left; box-sizing: border-box; margin-bottom: 0.5rem; color: var(--bs-dark);">
+                                Visiting Fee: <span id="app-fee-amount" style="color: var(--bs-primary);">0</span> BDT
                             </div>
 
                             <div class="full-width">
-                                <button type="button" class="submit-btn">Submit Now</button>
+                                <input type="text" id="app-comments" class="app-input" placeholder="Write Comments / Symptoms">
+                            </div>
+
+                            <div class="full-width">
+                                <button type="submit" class="submit-btn" style="border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="fas fa-credit-card"></i> Proceed to Payment
+                                </button>
                             </div>
                         </div>
                     </form>
+                </div>
+
+                <!-- Premium Payment Modal -->
+                <div class="payment-modal-overlay" id="payment-modal">
+                    <div class="payment-modal-content">
+                        <div class="payment-modal-header">
+                            <h3 class="payment-modal-title"><i class="fas fa-shield-alt" style="color: var(--bs-primary);"></i> Secure Checkout</h3>
+                            <button type="button" class="close-payment-modal" onclick="closePaymentModal()">&times;</button>
+                        </div>
+                        <div class="payment-summary">
+                            <div class="summary-row">
+                                <span>Doctor:</span>
+                                <span id="summary-doctor">-</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Appointment Date:</span>
+                                <span id="summary-date">-</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Amount:</span>
+                                <span id="summary-fee">0 BDT</span>
+                            </div>
+                        </div>
+
+                        <label style="display: block; font-weight: 700; margin-bottom: 0.5rem; text-align: left;">Select Payment Method:</label>
+                        <div class="payment-methods">
+                            <button type="button" class="method-btn active" onclick="selectPaymentMethod('Card')">
+                                <i class="fas fa-credit-card"></i> Card
+                            </button>
+                            <button type="button" class="method-btn" onclick="selectPaymentMethod('bKash')">
+                                <i class="fas fa-mobile-alt"></i> bKash
+                            </button>
+                            <button type="button" class="method-btn" onclick="selectPaymentMethod('Rocket')">
+                                <i class="fas fa-wallet"></i> Rocket
+                            </button>
+                        </div>
+
+                        <!-- Card payment form -->
+                        <div id="card-payment-form">
+                            <div class="payment-form-group">
+                                <label>Cardholder Name</label>
+                                <input type="text" id="pay-card-name" class="payment-input" placeholder="e.g. John Doe">
+                            </div>
+                            <div class="payment-form-group">
+                                <label>Card Number</label>
+                                <input type="text" id="pay-card-number" class="payment-input" placeholder="xxxx xxxx xxxx xxxx" maxlength="19">
+                            </div>
+                            <div style="display: flex; gap: 1rem;">
+                                <div class="payment-form-group" style="flex: 1;">
+                                    <label>Expiry Date</label>
+                                    <input type="text" id="pay-card-expiry" class="payment-input" placeholder="MM/YY" maxlength="5">
+                                </div>
+                                <div class="payment-form-group" style="flex: 1;">
+                                    <label>CVV / CVC</label>
+                                    <input type="password" id="pay-card-cvv" class="payment-input" placeholder="***" maxlength="3">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mobile banking form -->
+                        <div id="mobile-payment-form" style="display: none;">
+                            <div class="payment-form-group">
+                                <label id="mobile-label">Mobile Number</label>
+                                <input type="tel" id="pay-mobile-number" class="payment-input" placeholder="e.g. 017XXXXXXXX" maxlength="11">
+                            </div>
+                            <div class="payment-form-group">
+                                <label>Transaction PIN (OTP Simulation)</label>
+                                <input type="password" id="pay-mobile-pin" class="payment-input" placeholder="****" maxlength="4">
+                            </div>
+                        </div>
+
+                        <button type="button" class="payment-submit-btn" onclick="confirmPaymentAndBooking()" id="confirm-booking-btn">
+                            <i class="fas fa-lock"></i> Pay & Confirm Booking
+                        </button>
+                    </div>
                 </div>
 
             </div>
@@ -204,42 +426,227 @@
         </div>
     </footer>
 
-
      <!-- JavaScript Libraries -->
-    <!-- Auth Script -->
     <script src="js/auth.js"></script>
+    <script src="js/doctor-data.js"></script>
+    <script src="js/doctors.js"></script>
     <script src="js/script.js"></script>
-    <!-- Dynamic Blog Scripts -->
-    <script src="js/blog-data.js"></script>
-    <script src="js/blog-manager.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('home-blog-grid');
-            if (container && window.getBlogs) {
-                const blogs = window.getBlogs().slice(0, 3); // Get latest 3
+        const APPOINTMENT_API_URL = 'http://localhost:5000/api';
+        let allDoctorsList = [];
+        let selectedDoctorId = null;
+        let selectedPaymentMethod = 'Card';
 
-                if (blogs.length === 0) {
-                    container.innerHTML = '<p>No blog posts available.</p>';
+        // Check if user is logged in
+        const currentUser = JSON.parse(localStorage.getItem('medicoz_current_user')) || JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            alert('Please login first to book an appointment!');
+            window.location.href = 'login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Auto-fill logged-in patient details
+            if (currentUser) {
+                document.getElementById('app-name').value = currentUser.name || '';
+                document.getElementById('app-email').value = currentUser.email || '';
+                document.getElementById('app-phone').value = currentUser.phone || '';
+                if (currentUser.gender) {
+                    document.getElementById('app-gender').value = currentUser.gender;
+                }
+            }
+
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('app-date').setAttribute('min', today);
+
+            // Fetch doctors
+            if (window.getDoctors) {
+                allDoctorsList = await window.getDoctors();
+                
+                // Get pre-selected doctor from URL ?doctor=id
+                const urlParams = new URLSearchParams(window.location.search);
+                const preSelectedId = urlParams.get('doctor');
+
+                if (preSelectedId) {
+                    const doc = allDoctorsList.find(d => d.id === preSelectedId);
+                    if (doc) {
+                        selectedDoctorId = preSelectedId;
+                        document.getElementById('app-dept').value = doc.department;
+                        filterDoctorsByDept();
+                        document.getElementById('app-doctor').value = doc.id;
+                        updateFeeDisplay();
+                    } else {
+                        // General population
+                        populateDoctorsSelect(allDoctorsList);
+                    }
                 } else {
-                    container.innerHTML = blogs.map(blog => `
-                        <div class="blog-card">
-                            <div class="blog-img-box">
-                                <img src="${blog.image}" alt="${blog.title}" onerror="this.src='img/blog1.png'">
-                            </div>
-                            <div class="blog-content">
-                                <div class="blog-meta">
-                                    <span><i class="fa fa-calendar-alt"></i> ${blog.date}</span>
-                                    <span><i class="fa fa-comments"></i> ${blog.comments} Comments</span>
-                                </div>
-                                <a href="blog-details.html?id=${blog.id}" class="blog-title">${blog.title}</a>
-                                <p class="blog-excerpt">${blog.excerpt}</p>
-                                <a href="blog-details.html?id=${blog.id}" class="blog-btn">Read More</a>
-                            </div>
-                        </div>
-                    `).join('');
+                    populateDoctorsSelect(allDoctorsList);
                 }
             }
         });
+
+        function populateDoctorsSelect(doctors) {
+            const select = document.getElementById('app-doctor');
+            select.innerHTML = '<option value="">Select Doctor</option>';
+            doctors.forEach(doc => {
+                select.innerHTML += `<option value="${doc.id}">${doc.name} - ${doc.role || doc.department}</option>`;
+            });
+        }
+
+        function filterDoctorsByDept() {
+            const dept = document.getElementById('app-dept').value;
+            if (!dept) {
+                populateDoctorsSelect(allDoctorsList);
+            } else {
+                const filtered = allDoctorsList.filter(d => d.department.toLowerCase() === dept.toLowerCase());
+                populateDoctorsSelect(filtered);
+            }
+            updateFeeDisplay();
+        }
+
+        function updateFeeDisplay() {
+            const select = document.getElementById('app-doctor');
+            const doctorId = select.value;
+            const container = document.getElementById('fee-display-container');
+            const amountSpan = document.getElementById('app-fee-amount');
+
+            if (!doctorId) {
+                container.style.display = 'none';
+                return;
+            }
+
+            const doc = allDoctorsList.find(d => d.id === doctorId);
+            if (doc) {
+                amountSpan.textContent = doc.fee || '1000';
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        // Handle Proceed to Payment Click
+        function handleBookingSubmit(event) {
+            event.preventDefault();
+            
+            const doctorId = document.getElementById('app-doctor').value;
+            const doc = allDoctorsList.find(d => d.id === doctorId);
+            if (!doc) {
+                alert('Please select a doctor');
+                return;
+            }
+
+            const appDate = document.getElementById('app-date').value;
+            const fee = doc.fee || '1000';
+
+            // Show payment modal details
+            document.getElementById('summary-doctor').textContent = doc.name;
+            document.getElementById('summary-date').textContent = new Date(appDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('summary-fee').textContent = `${fee} BDT`;
+
+            // Open payment modal
+            const modal = document.getElementById('payment-modal');
+            modal.style.display = 'flex';
+        }
+
+        function closePaymentModal() {
+            document.getElementById('payment-modal').style.display = 'none';
+        }
+
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            const buttons = document.querySelectorAll('.method-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Highlight active button
+            event.currentTarget.classList.add('active');
+
+            // Toggle forms
+            const cardForm = document.getElementById('card-payment-form');
+            const mobileForm = document.getElementById('mobile-payment-form');
+
+            if (method === 'Card') {
+                cardForm.style.display = 'block';
+                mobileForm.style.display = 'none';
+            } else {
+                cardForm.style.display = 'none';
+                mobileForm.style.display = 'block';
+                document.getElementById('mobile-label').textContent = `${method} Mobile Number`;
+                document.getElementById('pay-mobile-number').placeholder = `e.g. 017XXXXXXXX (${method})`;
+            }
+        }
+
+        // Pay & Confirm Booking
+        async function confirmPaymentAndBooking() {
+            const btn = document.getElementById('confirm-booking-btn');
+            const doctorId = document.getElementById('app-doctor').value;
+            const doc = allDoctorsList.find(d => d.id === doctorId);
+
+            // Simple validation
+            if (selectedPaymentMethod === 'Card') {
+                const name = document.getElementById('pay-card-name').value.trim();
+                const number = document.getElementById('pay-card-number').value.trim();
+                const expiry = document.getElementById('pay-card-expiry').value.trim();
+                const cvv = document.getElementById('pay-card-cvv').value.trim();
+                if (!name || !number || !expiry || !cvv) {
+                    alert('Please fill in card payment details');
+                    return;
+                }
+            } else {
+                const phone = document.getElementById('pay-mobile-number').value.trim();
+                const pin = document.getElementById('pay-mobile-pin').value.trim();
+                if (!phone || !pin) {
+                    alert('Please fill in mobile banking details');
+                    return;
+                }
+            }
+
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Payment...';
+
+                // Send booking details to backend
+                const bookingData = {
+                    patientId: currentUser.id,
+                    doctorId: doc.id,
+                    patientName: document.getElementById('app-name').value.trim(),
+                    patientEmail: document.getElementById('app-email').value.trim(),
+                    patientPhone: document.getElementById('app-phone').value.trim(),
+                    patientGender: document.getElementById('app-gender').value,
+                    date: document.getElementById('app-date').value,
+                    comments: document.getElementById('app-comments').value.trim(),
+                    fee: Number(doc.fee || 1000),
+                    paymentStatus: 'Paid',
+                    paymentDetails: {
+                        method: selectedPaymentMethod,
+                        accountNumber: selectedPaymentMethod === 'Card' 
+                            ? document.getElementById('pay-card-number').value.replace(/\s?/g, '').slice(-4).padStart(16, '*') // mask
+                            : document.getElementById('pay-mobile-number').value,
+                        transactionId: 'TXN-' + Math.random().toString(36).substr(2, 9).toUpperCase()
+                    }
+                };
+
+                const response = await fetch(`${APPOINTMENT_API_URL}/appointments/book`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bookingData)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Booking failed');
+                }
+
+                alert('Payment Successful & Appointment Booked Successfully!');
+                closePaymentModal();
+                window.location.href = 'profile.html';
+
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-lock"></i> Pay & Confirm Booking';
+            }
+        }
     </script>
 
 

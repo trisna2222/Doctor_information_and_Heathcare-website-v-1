@@ -433,7 +433,7 @@
                     professionalism. Each specialist brings years of experience in their respective fields.</p>
             </div>
 
-            <div class="team-grid">
+            <div class="team-grid" id="home-team-grid">
                 <div class="team-card">
                     <div class="team-img-box">
                         <img src="img/team-1.jpg" alt="Dr. Adiba Jannat Zara">
@@ -735,6 +735,8 @@
     <!-- JavaScript Libraries -->
     <!-- Auth Script -->
     <script src="js/auth.js"></script>
+    <script src="js/doctor-data.js"></script>
+    <script src="js/doctors.js"></script>
     <script src="js/script.js"></script>
     <!-- Dynamic Blog Scripts -->
     <script src="js/blog-data.js"></script>
@@ -768,6 +770,41 @@
             }
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const teamContainer = document.getElementById('home-team-grid');
+            if (teamContainer && window.getDoctors) {
+                const doctors = await window.getDoctors();
+                if (doctors.length > 0) {
+                    // Show up to 8 doctors, reversed so newly added ones appear first
+                    const displayDoctors = [...doctors].reverse().slice(0, 8);
+                    teamContainer.innerHTML = displayDoctors.map(doc => {
+                        const link = doc.filename || `doctor-details.html?id=${doc.id}`;
+                        return `
+                            <div class="team-card">
+                                <div class="team-img-box">
+                                    <a href="${link}">
+                                        <img src="${doc.image}" alt="${doc.name}" onerror="this.src='img/default-doctor.jpg'">
+                                    </a>
+                                </div>
+                                <div class="team-content">
+                                    <h5 class="team-name">
+                                        <a href="${link}">${doc.name}</a>
+                                    </h5>
+                                    <p class="team-role">${doc.role || doc.department}</p>
+                                    <div class="team-card-actions">
+                                        <a href="tel:${doc.phone || '+8801300570555'}" class="btn-call"><i class="fas fa-phone-alt"></i> Call Now</a>
+                                        <a href="appointment.html?doctor=${doc.id}" class="btn-book"><i class="fas fa-calendar-check"></i> Book Now</a>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            }
+        });
+    </script>
+    <script src="js/booking-modal.js"></script>
 </body>
 
 </html>

@@ -7,94 +7,204 @@
     <title>Admin Panel - Medicoz</title>
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/admin.css">
-
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-    </style>
 </head>
 
 <body>
-
-    <!-- Header -->
-    <header class="admin-header">
-        <a href="index.html" class="admin-brand">Medicoz Admin</a>
-        <a href="index.html" class="btn btn-primary"
-            style="background-color: transparent; color: var(--primary-color); border: 1px solid var(--primary-color);">View
-            Website</a>
-    </header>
-
-    <!-- Main Content -->
-    <main class="admin-container">
-        <!-- Tab Navigation -->
-        <div class="admin-tabs" style="margin-bottom: 2rem;">
-            <button class="tab-btn active" data-tab="doctors">Doctors Management</button>
-            <button class="tab-btn" data-tab="blogs">Blog Management</button>
-        </div>
-
-        <!-- Doctors Tab -->
-        <div id="doctors-tab" class="tab-content active">
-            <div class="admin-action-bar">
-                <h2>Doctors Management</h2>
-                <button id="add-doctor-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Add New Doctor</button>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-heartbeat" style="color: var(--danger)"></i>
+                <span>Medicoz Admin</span>
             </div>
-
-            <!-- Doctors Table -->
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Department</th>
-                        <th>Role</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="doctors-table-body">
-                    <!-- Javascript will populate this -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Blogs Tab -->
-        <div id="blogs-tab" class="tab-content" style="display: none;">
-            <div class="admin-action-bar">
-                <h2>Blog Management</h2>
-                <button id="add-blog-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Add New Post</button>
+            <nav class="sidebar-nav">
+                <button class="nav-item active tab-btn" data-tab="doctors">
+                    <i class="fas fa-user-md"></i>
+                    <span>Doctors Management</span>
+                </button>
+                <button class="nav-item tab-btn" data-tab="blogs">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Blog Management</span>
+                </button>
+                <button class="nav-item tab-btn" data-tab="users">
+                    <i class="fas fa-users"></i>
+                    <span>Users Management</span>
+                </button>
+                <button class="nav-item tab-btn" data-tab="applications">
+                    <i class="fas fa-file-signature"></i>
+                    <span>Doctor Applications</span>
+                </button>
+                <button class="nav-item tab-btn" data-tab="appointments">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="index.html" target="_blank" class="nav-item">
+                    <i class="fas fa-external-link-alt"></i>
+                    <span>View Website</span>
+                </a>
             </div>
+        </aside>
 
-            <!-- Blogs Table -->
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Title</th>
-                        <th>Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="blogs-table-body">
-                    <!-- Javascript will populate this -->
-                </tbody>
-            </table>
-        </div>
-    </main>
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <h1 id="page-title">Doctors Management</h1>
+                <div class="user-profile">
+                    <div class="avatar">A</div>
+                    <span>Admin User</span>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- Doctors Tab -->
+                <div id="doctors-tab" class="tab-content active">
+                    <div class="action-bar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="doctor-search-input" placeholder="Search doctors by name, department or role...">
+                        </div>
+                        <button id="add-doctor-btn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add New Doctor
+                        </button>
+                    </div>
+
+                    <div class="doctors-grid" id="doctors-grid-container">
+                        <!-- Javascript will populate this -->
+                    </div>
+                </div>
+
+                <!-- Blogs Tab -->
+                <div id="blogs-tab" class="tab-content" style="display: none;">
+                    <div class="action-bar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search posts...">
+                        </div>
+                        <button id="add-blog-btn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add New Post
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Post</th>
+                                    <th>Date</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="blogs-table-body">
+                                <!-- Javascript will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Users Tab -->
+                <div id="users-tab" class="tab-content" style="display: none;">
+                    <div class="action-bar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="user-search-input" placeholder="Search users by name or email...">
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Gender</th>
+                                    <th>Address</th>
+                                    <th>Joined Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body">
+                                <!-- Javascript will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Doctor Applications Tab -->
+                <div id="applications-tab" class="tab-content" style="display: none;">
+                    <div class="action-bar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="application-search-input" placeholder="Search applications by name or email...">
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Applicant</th>
+                                    <th>Email / Phone</th>
+                                    <th>Dept / Designation</th>
+                                    <th>Fee</th>
+                                    <th>Schedule</th>
+                                    <th>Status</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="applications-table-body">
+                                <!-- Javascript will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Appointments Tab -->
+                <div id="appointments-tab" class="tab-content" style="display: none;">
+                    <div class="action-bar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="appointment-search-input" placeholder="Search appointments by patient, doctor or comments...">
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>Doctor</th>
+                                    <th>Appt Date</th>
+                                    <th>Fee</th>
+                                    <th>Payment Status</th>
+                                    <th>Status</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointments-table-body">
+                                <!-- Javascript will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <!-- Add/Edit Modal (Doctors) -->
     <div class="modal-overlay" id="doctor-modal">
-        <div class="modal-content">
+        <form id="doctor-form" class="modal-content">
             <div class="modal-header">
                 <h3 id="modal-title">Add New Doctor</h3>
-                <button class="close-modal" id="close-modal">&times;</button>
+                <button type="button" class="close-modal" id="close-modal">&times;</button>
             </div>
-            <form id="doctor-form">
+            <div class="modal-body">
                 <input type="hidden" id="doctor-id">
 
                 <div class="form-group">
@@ -132,36 +242,44 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Image Path</label>
-                    <input type="text" id="image" class="form-control" placeholder="e.g. img/team-1.jpg"
-                        value="img/default-doctor.jpg">
-                    <small style="color: #777;">Enter relative path to image.</small>
+                    <label class="form-label">Doctor Image</label>
+                    <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 10px;">
+                        <div id="doctor-preview-container" style="width: 70px; height: 70px; border-radius: 50%; border: 1px solid var(--border-color); overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--bg-color); flex-shrink: 0;">
+                            <img id="doctor-image-preview" src="img/default-doctor.jpg" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='img/default-doctor.jpg'">
+                        </div>
+                        <div style="flex: 1;">
+                            <input type="file" id="doctor-image-file" accept="image/*" class="form-control" style="padding: 6px 12px; font-size: 0.85rem;">
+                            <span class="help-text" style="display: block; margin-top: 4px;">Choose an image file to upload (Max 2MB).</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="image" value="img/default-doctor.jpg">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Bio / Description</label>
-                    <textarea id="bio" class="form-control" rows="4"
-                        placeholder="Short description about the doctor..."></textarea>
+                    <textarea id="bio" class="form-control" placeholder="Short description about the doctor..."></textarea>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 0;">
                     <label class="form-label">Schedule / Visiting Hours</label>
                     <input type="text" id="schedule" class="form-control" placeholder="e.g. Mon, Wed: 5PM - 8PM">
                 </div>
-
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Doctor</button>
-            </form>
-        </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-edit" id="cancel-doctor">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Doctor</button>
+            </div>
+        </form>
     </div>
 
     <!-- Add/Edit Modal (Blogs) -->
     <div class="modal-overlay" id="blog-modal">
-        <div class="modal-content">
+        <form id="blog-form" class="modal-content">
             <div class="modal-header">
                 <h3 id="blog-modal-title">Add New Post</h3>
-                <button class="close-modal" id="close-blog-modal">&times;</button>
+                <button type="button" class="close-modal" id="close-blog-modal">&times;</button>
             </div>
-            <form id="blog-form">
+            <div class="modal-body">
                 <input type="hidden" id="blog-id">
 
                 <div class="form-group">
@@ -172,25 +290,27 @@
                 <div class="form-group">
                     <label class="form-label">Image Path</label>
                     <input type="text" id="blog-image" class="form-control" placeholder="e.g. img/blog1.png" required>
-                    <small style="color: #777;">Enter relative path to image.</small>
+                    <span class="help-text">Enter relative path to image.</span>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Except (Short Summary)</label>
-                    <textarea id="blog-excerpt" class="form-control" rows="3" required
+                    <label class="form-label">Excerpt (Short Summary)</label>
+                    <textarea id="blog-excerpt" class="form-control" style="min-height: 70px" required
                         placeholder="Short summary for the card view..."></textarea>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 0;">
                     <label class="form-label">Content (HTML allowed)</label>
-                    <textarea id="blog-content" class="form-control" rows="10" required
+                    <textarea id="blog-content" class="form-control" style="min-height: 150px" required
                         placeholder="Full content of the blog post..."></textarea>
-                    <small style="color: #777;">You can use HTML tags like &lt;p&gt;, &lt;h3&gt;, etc.</small>
+                    <span class="help-text">You can use HTML tags like &lt;p&gt;, &lt;h3&gt;, etc.</span>
                 </div>
-
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Post</button>
-            </form>
-        </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-edit" id="cancel-blog">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Post</button>
+            </div>
+        </form>
     </div>
 
     <!-- Logic -->

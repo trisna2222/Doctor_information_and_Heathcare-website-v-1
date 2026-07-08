@@ -83,12 +83,86 @@
         </div>
     </div>
 
+    <!-- Custom Styling for Reviews Section -->
+    <style>
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 40px;
+            align-items: start;
+        }
+        @media (max-width: 768px) {
+            .reviews-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .review-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.01);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .review-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        .star-rating-input {
+            display: flex;
+            gap: 8px;
+            font-size: 1.8rem;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+        }
+        .star-rating-input i {
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+    </style>
+
     <!-- Semantic Doctor Profile Section -->
     <div class="doctor-profile-section section-wrapper">
         <div class="content-container">
             <div class="doctor-card" id="doctor-content">
                 <!-- Javascript will populate this -->
                 <div class="loading-spinner" style="text-align: center; padding: 2rem;">Loading details...</div>
+            </div>
+
+            <!-- Reviews and Ratings Section -->
+            <div id="reviews-section" style="margin-top: 50px; border-top: 1px solid #eee; padding-top: 40px; display: none;">
+                <div class="reviews-grid">
+                    
+                    <!-- Left Column: Reviews List & Summary -->
+                    <div id="reviews-left-col">
+                        <h3 style="color: var(--bs-dark); margin-bottom: 20px; font-weight: 700; font-size: 1.8rem;">Patient Reviews</h3>
+                        <div id="rating-summary" style="display: flex; align-items: center; gap: 24px; background: #f8f9fa; padding: 24px; border-radius: 12px; margin-bottom: 30px;">
+                            <div style="text-align: center; border-right: 1px solid #e2e8f0; padding-right: 24px;">
+                                <h1 id="avg-rating-val" style="font-size: 3.5rem; color: var(--bs-primary); margin: 0; line-height: 1; font-weight: 800;">0.0</h1>
+                                <span style="font-size: 0.85rem; color: #64748b; font-weight: 500;">out of 5.0</span>
+                            </div>
+                            <div>
+                                <div id="stars-summary" style="font-size: 1.4rem; color: #ffc107; margin-bottom: 6px;">
+                                    <!-- Stars will render here -->
+                                </div>
+                                <span id="total-reviews-count" style="font-size: 1rem; color: #475569; font-weight: 600;">0 reviews</span>
+                            </div>
+                        </div>
+                        
+                        <div id="reviews-list" style="display: flex; flex-direction: column; gap: 20px;">
+                            <!-- Patient reviews will render here -->
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Submit a Review Form -->
+                    <div id="add-review-container" style="background: #ffffff; border: 1px solid #e2e8f0; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+                        <h3 style="color: var(--bs-dark); margin-bottom: 20px; font-weight: 700; font-size: 1.5rem;">Leave a Review</h3>
+                        <div id="review-form-wrapper">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
@@ -141,25 +215,89 @@
 
     <script src="js/doctors.js"></script>
     <script>
-        // Ensure doctors are loaded
-        // window.getDoctorById comes from js/doctors.js
+        // Star selectors global state
+        let selectedRating = 0;
 
-        // Get ID from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const doctorId = urlParams.get('id');
+        function renderStars(rating) {
+            let starsHtml = '';
+            const rounded = Math.round(rating);
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rounded) {
+                    starsHtml += '<i class="fas fa-star"></i>';
+                } else {
+                    starsHtml += '<i class="far fa-star"></i>';
+                }
+            }
+            return starsHtml;
+        }
 
-        const container = document.getElementById('doctor-content');
+        function initStarSelector() {
+            const stars = document.querySelectorAll('.star-rating-input i');
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    selectedRating = parseInt(this.getAttribute('data-value'));
+                    updateStars(selectedRating);
+                });
+                star.addEventListener('mouseover', function() {
+                    const hoverVal = parseInt(this.getAttribute('data-value'));
+                    updateStars(hoverVal);
+                });
+                star.addEventListener('mouseout', function() {
+                    updateStars(selectedRating);
+                });
+            });
+        }
 
-        if (!doctorId) {
-            container.innerHTML = `<h3>No doctor selected.</h3><a href="team.html" class="btn btn-primary">Back to Team</a>`;
-        } else {
-            const doctor = window.getDoctorById(doctorId);
+        function updateStars(val) {
+            const stars = document.querySelectorAll('.star-rating-input i');
+            stars.forEach(star => {
+                const starVal = parseInt(star.getAttribute('data-value'));
+                if (starVal <= val) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                    star.style.color = '#ffc107';
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                    star.style.color = '#cbd5e1';
+                }
+            });
+        }
 
-            if (doctor) {
+        // Initialize details page
+        (async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const doctorId = urlParams.get('id');
+            const container = document.getElementById('doctor-content');
+
+            if (!doctorId) {
+                container.innerHTML = `<h3>No doctor selected.</h3><a href="team.html" class="btn btn-primary">Back to Team</a>`;
+                return;
+            }
+
+            try {
+                // 1. Fetch Doctor details and reviews in parallel
+                const [doctor, reviewsRes] = await Promise.all([
+                    window.getDoctorById(doctorId),
+                    fetch(`http://localhost:5000/api/reviews/doctor/${doctorId}`).then(res => res.json())
+                ]);
+
+                if (!doctor) {
+                    container.innerHTML = `<h3>Doctor not found.</h3><a href="team.html" class="btn btn-primary mt-3">Back to Team</a>`;
+                    return;
+                }
+
+                // Title updates
                 document.title = `${doctor.name} - Medicoz`;
                 document.getElementById('page-title').textContent = doctor.name;
                 document.getElementById('breadcrumb-name').textContent = doctor.name;
 
+                // Ratings and reviews data
+                const reviews = reviewsRes.reviews || [];
+                const avgRating = reviewsRes.averageRating || 0;
+                const totalReviews = reviewsRes.totalReviews || 0;
+
+                // Render Doctor Info Card
                 container.innerHTML = `
                 <div class="doctor-wrapper" style="display: flex; flex-wrap: wrap; gap: 30px;">
                     <div class="doctor-image-col" style="flex: 1; min-width: 300px;">
@@ -168,43 +306,171 @@
                     
                     <div class="doctor-info-col" style="flex: 2; min-width: 300px;">
                          <h2 style="color: var(--bs-primary); margin-bottom: 5px;">${doctor.name}</h2>
-                         <p class="text-muted" style="font-size: 1.1rem; margin-bottom: 20px;">${doctor.role}</p>
+                         <p class="text-muted" style="font-size: 1.1rem; margin-bottom: 10px;">${doctor.role}</p>
+                         
+                         <!-- Rating badge header -->
+                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 20px;">
+                             <span style="color: #ffc107; font-size: 1rem; display: flex; gap: 2px;">${renderStars(avgRating)}</span>
+                             <span style="font-weight: 600; color: #475569; font-size: 0.95rem; margin-left: 4px;">${avgRating.toFixed(1)} / 5.0</span>
+                             <span style="color: #94a3b8; font-size: 0.95rem;">(${totalReviews} reviews)</span>
+                         </div>
                          
                          <div class="info-card" style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-                            <div class="row mb-2">
-                                <div class="col-md-4"><strong>Department:</strong></div>
-                                <div class="col-md-8">${doctor.department}</div>
+                            <div class="row mb-2" style="display: flex; margin-bottom: 8px;">
+                                <div style="width: 150px; font-weight: bold;">Department:</div>
+                                <div>${doctor.department}</div>
                             </div>
-                            <div class="row mb-2">
-                                <div class="col-md-4"><strong>Qualification:</strong></div>
-                                <div class="col-md-8">${doctor.qualification || 'MBBS'}</div>
+                            <div class="row mb-2" style="display: flex; margin-bottom: 8px;">
+                                <div style="width: 150px; font-weight: bold;">Qualification:</div>
+                                <div>${doctor.qualification || 'MBBS'}</div>
                             </div>
-                            <div class="row mb-2">
-                                <div class="col-md-4"><strong>Consultation Fee:</strong></div>
-                                <div class="col-md-8">${doctor.fee || '1000'} BDT</div>
+                            <div class="row mb-2" style="display: flex; margin-bottom: 8px;">
+                                <div style="width: 150px; font-weight: bold;">Consultation Fee:</div>
+                                <div>${doctor.fee || '1000'} BDT</div>
                             </div>
-                             <div class="row mb-2">
-                                <div class="col-md-4"><strong>Schedule:</strong></div>
-                                <div class="col-md-8">${doctor.schedule || 'Call for details'}</div>
+                             <div class="row mb-2" style="display: flex; margin-bottom: 8px;">
+                                <div style="width: 150px; font-weight: bold;">Schedule:</div>
+                                <div>${doctor.schedule || 'Call for details'}</div>
                             </div>
                          </div>
                          
                          <div class="doctor-bio mb-4">
-                            <h4 class="mb-3">Biography</h4>
-                            <p>${doctor.bio || 'No biography available for this doctor.'}</p>
+                            <h4 class="mb-3" style="margin-bottom: 10px; color: var(--bs-dark);">Biography</h4>
+                            <p style="color: #555; line-height: 1.6;">${doctor.bio || 'No biography available for this doctor.'}</p>
                          </div>
                          
-                         <div class="action-buttons">
-                            <a href="appointment.html?doctor=${doctor.id}" class="btn btn-primary btn-lg"><i class="fas fa-calendar-check"></i> Book Appointment</a>
+                         <div class="action-buttons" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <a href="appointment.html?doctor=${doctor.id}" class="btn btn-primary btn-lg" style="color: white; padding: 12px 24px; font-weight: bold; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px;"><i class="fas fa-calendar-check"></i> Book Appointment</a>
+                            <a href="tel:${doctor.phone || '+8801300570555'}" class="btn btn-secondary btn-lg" style="color: white; background: var(--bs-secondary); padding: 12px 24px; font-weight: bold; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; border: none;"><i class="fas fa-phone-alt"></i> Call Now</a>
                          </div>
                     </div>
                 </div>
                 `;
-            } else {
-                container.innerHTML = `<h3>Doctor not found.</h3><a href="team.html" class="btn btn-primary mt-3">Back to Team</a>`;
+
+                // 2. Render reviews summary & list
+                document.getElementById('reviews-section').style.display = 'block';
+                document.getElementById('avg-rating-val').textContent = avgRating.toFixed(1);
+                document.getElementById('total-reviews-count').textContent = `${totalReviews} reviews`;
+                document.getElementById('stars-summary').innerHTML = renderStars(avgRating);
+
+                const listContainer = document.getElementById('reviews-list');
+                if (reviews.length === 0) {
+                    listContainer.innerHTML = `<p style="color: #64748b; font-style: italic;">No reviews yet for this doctor.</p>`;
+                } else {
+                    listContainer.innerHTML = reviews.map(review => {
+                        const dateStr = new Date(review.createdAt).toLocaleDateString('en-US', {
+                            year: 'numeric', month: 'short', day: 'numeric'
+                        });
+                        return `
+                            <div class="review-card">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                                    <div>
+                                        <h5 style="margin: 0; color: var(--bs-dark); font-weight: 600; font-size: 1.05rem;">${review.patientName}</h5>
+                                        <span style="font-size: 0.8rem; color: #94a3b8;">${dateStr}</span>
+                                    </div>
+                                    <div style="color: #ffc107; font-size: 0.95rem; display: flex; gap: 2px;">
+                                        ${renderStars(review.rating)}
+                                    </div>
+                                </div>
+                                <p style="color: #475569; margin: 0; line-height: 1.5; font-size: 0.95rem;">${review.comment || 'No comment provided.'}</p>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                // 3. Render review submission form logic
+                const currentUser = JSON.parse(localStorage.getItem('medicoz_current_user'));
+                const formWrapper = document.getElementById('review-form-wrapper');
+
+                if (currentUser) {
+                    if (currentUser.role === 'admin') {
+                        document.getElementById('add-review-container').style.display = 'none';
+                        document.getElementById('reviews-left-col').style.gridColumn = 'span 2';
+                    } else {
+                        formWrapper.innerHTML = `
+                            <form id="details-review-form">
+                                <div style="margin-bottom: 15px;">
+                                    <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 8px; font-size: 0.9rem;">Your Rating</label>
+                                    <div class="star-rating-input">
+                                        <i class="far fa-star" data-value="1"></i>
+                                        <i class="far fa-star" data-value="2"></i>
+                                        <i class="far fa-star" data-value="3"></i>
+                                        <i class="far fa-star" data-value="4"></i>
+                                        <i class="far fa-star" data-value="5"></i>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 20px;">
+                                    <label for="review-comment-input" style="display: block; font-weight: 600; color: #475569; margin-bottom: 8px; font-size: 0.9rem;">Your Review</label>
+                                    <textarea id="review-comment-input" rows="4" placeholder="Write your experience with this doctor..." style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 0.95rem; resize: vertical; outline: none; transition: border-color 0.2s;" required></textarea>
+                                </div>
+                                <button type="submit" id="submit-review-btn" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; color: white;">Submit Review</button>
+                            </form>
+                        `;
+
+                        initStarSelector();
+
+                        document.getElementById('details-review-form').addEventListener('submit', async function(e) {
+                            e.preventDefault();
+                            if (selectedRating === 0) {
+                                alert('Please select a star rating');
+                                return;
+                            }
+
+                            const comment = document.getElementById('review-comment-input').value.trim();
+                            const submitBtn = document.getElementById('submit-review-btn');
+
+                            try {
+                                submitBtn.disabled = true;
+                                submitBtn.textContent = 'Submitting...';
+
+                                const response = await fetch('http://localhost:5000/api/reviews', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        patientId: currentUser.id || currentUser._id,
+                                        patientName: currentUser.name,
+                                        doctorId,
+                                        rating: selectedRating,
+                                        comment
+                                    })
+                                });
+
+                                if (!response.ok) throw new Error('Failed to submit review');
+
+                                // Clear form & reset rating
+                                document.getElementById('review-comment-input').value = '';
+                                selectedRating = 0;
+                                updateStars(0);
+
+                                alert('Review submitted successfully!');
+
+                                // Reload details block to update star rating at top and list
+                                window.location.reload();
+                            } catch (err) {
+                                alert(err.message);
+                            } finally {
+                                submitBtn.disabled = false;
+                                submitBtn.textContent = 'Submit Review';
+                            }
+                        });
+                    }
+                } else {
+                    formWrapper.innerHTML = `
+                        <div style="text-align: center; padding: 20px 10px;">
+                            <i class="fas fa-lock" style="font-size: 2.5rem; color: #cbd5e1; margin-bottom: 15px; display: block;"></i>
+                            <p style="color: #64748b; margin-bottom: 15px; font-size: 0.95rem;">Please login to leave a rating and review for this doctor.</p>
+                            <a href="login.html" class="btn btn-primary" style="display: inline-block; padding: 10px 24px; font-weight: 600; border-radius: 8px; color: white;">Login Now</a>
+                        </div>
+                    `;
+                }
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `<h3>Error loading doctor details.</h3><a href="team.html" class="btn btn-primary mt-3">Back to Team</a>`;
             }
-        }
+        })();
     </script>
+    <script src="js/booking-modal.js"></script>
 </body>
 
 </html>

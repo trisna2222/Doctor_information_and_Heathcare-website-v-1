@@ -1241,71 +1241,123 @@ img {
 
 .team-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2.5rem;
 }
 
 .team-card {
-    background: var(--bs-light);
-    border-radius: 8px;
+    background: #ffffff;
+    border-radius: 16px;
     overflow: hidden;
-    transition: 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
-
+.team-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    border-color: rgba(19, 197, 221, 0.2);
+}
 
 .team-img-box {
     position: relative;
     overflow: hidden;
+    height: 280px;
+    background: #f8fafc;
 }
 
 .team-img-box img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
     display: block;
 }
 
-.team-socials {
-    position: absolute;
-    bottom: -50px;
-    /* Hide initially */
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.9);
-    transition: 0.3s;
+.team-card:hover .team-img-box img {
+    transform: scale(1.06);
 }
-
-
-.team-social-btn {
-    width: 35px;
-    height: 35px;
-    background: var(--bs-primary);
-    color: #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.3s;
-}
-
 
 .team-content {
     padding: 1.5rem;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 .team-name {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
+    color: #1e293b;
+}
+
+.team-name a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.team-name a:hover {
+    color: var(--bs-primary) !important;
 }
 
 .team-role {
     color: var(--bs-primary);
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1.25rem;
+}
+
+.team-card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    width: 100%;
+}
+
+.team-card-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    flex: 1;
+}
+
+.team-card-actions .btn-call {
+    background: #e6fcf5;
+    color: #0ca678;
+    border: 1px solid #c3fae8;
+}
+
+.team-card-actions .btn-call:hover {
+    background: #0ca678;
+    color: #ffffff;
+    border-color: #0ca678;
+}
+
+.team-card-actions .btn-book {
+    background: var(--bs-primary);
+    color: #ffffff;
+    border: 1px solid var(--bs-primary);
+}
+
+.team-card-actions .btn-book:hover {
+    background: #0fb3c8;
+    border-color: #0fb3c8;
 }
 
 /* --- Testimonial Section --- */
