@@ -1439,3 +1439,10 @@ function showConfirmModal({ title, message, type = 'primary', confirmText = 'Yes
         cancelBtn.addEventListener('click', onCancel);
     });
 }
+
+// Global Custom Logout Action for Admin Panel
+window.adminLogout = function () {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('medicoz_current_user');
+    window.location.href = 'login.html';
+};

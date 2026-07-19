@@ -56,11 +56,16 @@
                     <span>Comment Moderation</span>
                 </button>
             </nav>
-            <div class="sidebar-footer">
+            <div class="sidebar-footer" style="display:flex; flex-direction:column; gap:5px;">
                 <a href="index.html" target="_blank" class="nav-item">
                     <i class="fas fa-external-link-alt"></i>
                     <span>View Website</span>
                 </a>
+                <button class="nav-item" onclick="adminLogout()"
+                    style="background:none; border:none; width:100%; text-align:left; cursor:pointer; display:flex; align-items:center; float:none; padding:10px 16px;">
+                    <i class="fas fa-sign-out-alt" style="color: #e74c3c; margin-right: 8px;"></i>
+                    <span style="color:#ffffff; font-size:0.95rem;">Logout</span>
+                </button>
             </div>
         </aside>
 
