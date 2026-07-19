@@ -10,6 +10,7 @@ async function handleRegister(event) {
     const email = form.email.value;
     const password = form.password.value;
     const confirmPassword = form.confirm_password.value;
+    const role = form.role ? form.role.value : 'patient';
     const errorDiv = document.getElementById('auth-error');
 
     if (password !== confirmPassword) {
@@ -23,7 +24,7 @@ async function handleRegister(event) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ name, email, password })
+            body: JSON.stringify({ name, email, password, role })
         });
 
         const data = await response.json();
@@ -75,6 +76,8 @@ function loginUser(user) {
     localStorage.setItem('currentUser', JSON.stringify(user));
     if (user.role === 'admin') {
         window.location.href = 'admin.html';
+    } else if (user.role === 'doctor') {
+        window.location.href = 'doctor.html';
     } else {
         window.location.href = 'index.html';
     }
@@ -148,7 +151,8 @@ function updateNavbar() {
         }
 
         const firstName = currentUser.name ? currentUser.name.split(' ')[0] : 'User';
-        container.innerHTML = `<a href="profile.html" class="nav-link-item" style="color: var(--bs-primary); font-weight: bold; display: inline-flex; align-items: center;">${avatarHTML}Hello, ${firstName}</a>`;
+        const redirectPage = currentUser.role === 'doctor' ? 'doctor.html' : (currentUser.role === 'admin' ? 'admin.html' : 'profile.html');
+        container.innerHTML = `<a href="${redirectPage}" class="nav-link-item" style="color: var(--bs-primary); font-weight: bold; display: inline-flex; align-items: center;">${avatarHTML}Hello, ${firstName}</a>`;
     } else {
         container.innerHTML = `<a href="login.html" class="nav-link-item nav-cta-btn" style="font-weight: bold;">Login</a>`;
     }

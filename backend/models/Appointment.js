@@ -55,6 +55,10 @@ const AppointmentSchema = new mongoose.Schema({
         enum: ['Pending', 'Approved', 'Completed', 'Cancelled'],
         default: 'Pending'
     },
+    report: {
+        type: String,
+        default: ""
+    },
     createdAt: {
         type: Date,
         default: Date.now

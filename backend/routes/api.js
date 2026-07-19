@@ -204,6 +204,30 @@ router.delete('/appointments/:id', async (req, res) => {
     }
 });
 
+// Upload a medical report/prescription for an appointment
+router.put('/appointments/:id/report', async (req, res) => {
+    try {
+        const { report } = req.body;
+        if (!report) {
+            return res.status(400).json({ message: 'Report content is required' });
+        }
+
+        const updatedAppointment = await Appointment.findByIdAndUpdate(
+            req.params.id,
+            { report },
+            { new: true }
+        );
+
+        if (!updatedAppointment) {
+            return res.status(404).json({ message: 'Appointment not found' });
+        }
+
+        res.json(updatedAppointment);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
 // ===================================
 // REVIEWS ENDPOINTS
 // ===================================

@@ -9,7 +9,7 @@ const DoctorApplication = require('../models/DoctorApplication');
 // Register a new user
 router.post('/register', async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, role } = req.body;
 
         if (!name || !email || !password) {
             return res.status(400).json({ message: "Please fill in all fields" });
@@ -29,10 +29,28 @@ router.post('/register', async (req, res) => {
         const newUser = new User({
             name,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            role: role || 'patient'
         });
 
         await newUser.save();
+
+        // If user is registering as a doctor, seed a Doctor record
+        if (newUser.role === 'doctor') {
+            const newDoctor = new Doctor({
+                userId: newUser._id,
+                name: newUser.name,
+                department: "General Medicine",
+                role: "Medical Officer",
+                qualification: "MBBS",
+                fee: "500",
+                image: "img/default-doctor.jpg",
+                bio: "Professional medical practitioner",
+                schedule: "Mon - Fri (9:00 AM - 5:00 PM)",
+                phone: ""
+            });
+            await newDoctor.save();
+        }
 
         // Create login log
         const log = new AuthLog({
@@ -47,6 +65,7 @@ router.post('/register', async (req, res) => {
             name: newUser.name,
             email: newUser.email,
             profilePicture: newUser.profilePicture || "",
+            role: newUser.role,
             joined: newUser.createdAt,
             createdAt: newUser.createdAt
         });
@@ -101,7 +120,7 @@ router.post('/login', async (req, res) => {
             name: user.name,
             email: user.email,
             profilePicture: user.profilePicture || "",
-            role: user.email.toLowerCase() === 'admin@gmail.com' ? 'admin' : 'user',
+            role: user.email.toLowerCase() === 'admin@gmail.com' ? 'admin' : (user.role || 'patient'),
             joined: user.createdAt,
             createdAt: user.createdAt
         });

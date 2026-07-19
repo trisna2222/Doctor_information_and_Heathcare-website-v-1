@@ -399,6 +399,175 @@
             box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3) !important;
             transform: translateY(-1px) !important;
         }
+
+        /* Creative Doctor Dashboard Styles */
+        .doctor-dashboard-wrapper {
+            margin-top: 3rem;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .doctor-tab-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #eef2f7;
+            padding-bottom: 0.75rem;
+            justify-content: center;
+        }
+
+        .doctor-tab-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #748c90;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .doctor-tab-btn:hover {
+            color: var(--bs-primary);
+        }
+
+        .doctor-tab-btn.active {
+            color: var(--bs-primary);
+        }
+
+        .doctor-tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -11px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--bs-primary);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .doctor-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f1f3f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-card-info h4 {
+            font-size: 0.85rem;
+            color: #8898a9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            font-weight: 600;
+            margin-top: 0;
+        }
+
+        .stat-card-info .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #2b3a4a;
+        }
+
+        .stat-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .icon-blue {
+            background: #e8f3ff;
+            color: #1c7ed6;
+        }
+
+        .icon-green {
+            background: #ebfbee;
+            color: #2b8a3e;
+        }
+
+        .icon-orange {
+            background: #fff4e6;
+            color: #d9480f;
+        }
+
+        .doctor-dashboard-panel-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .doctor-dashboard-panel-content.active {
+            display: block;
+        }
+
+        .form-grid-responsive {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid-responsive {
+                grid-template-columns: 1fr;
+            }
+
+            .doctor-tab-nav {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .doctor-tab-btn.active::after {
+                display: none;
+            }
+
+            .doctor-tab-btn {
+                text-align: center;
+                border-bottom: 1px solid #f0f0f0;
+                padding: 12px;
+            }
+
+            .doctor-tab-btn.active {
+                background: #f1f3f7;
+                border-radius: 6px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
@@ -515,12 +684,112 @@
         </div>
 
         <!-- Doctor Dashboard Section -->
-        <div class="appointment-history" id="doctor-dashboard-container"
-            style="display: none; margin-top: 2rem; border-top: 4px solid var(--bs-primary);">
-            <h3 class="history-title"><i class="fas fa-user-md"></i> Doctor Dashboard - Incoming Bookings</h3>
-            <div id="doctor-appointments-list">
-                <div class="empty-state">No patient bookings found.</div>
+        <div class="doctor-dashboard-wrapper" id="doctor-dashboard-panel" style="display: none;">
+
+            <!-- Tab Navigation -->
+            <div class="doctor-tab-nav">
+                <button class="doctor-tab-btn active" onclick="switchDoctorTab('bookings')">
+                    <i class="fas fa-calendar-alt"></i> Bookings & Overview
+                </button>
+                <button class="doctor-tab-btn" onclick="switchDoctorTab('profile')">
+                    <i class="fas fa-user-md"></i> Professional Profile
+                </button>
             </div>
+
+            <!-- TAB 1: Bookings & Overview -->
+            <div id="doctor-bookings-tab" class="doctor-dashboard-panel-content active">
+                <!-- Statistics Grid -->
+                <div class="doctor-stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-info">
+                            <h4>Total Bookings</h4>
+                            <div class="stat-value" id="doc-stat-total">0</div>
+                        </div>
+                        <div class="stat-card-icon icon-blue">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-info">
+                            <h4>Pending Action</h4>
+                            <div class="stat-value" id="doc-stat-pending">0</div>
+                        </div>
+                        <div class="stat-card-icon icon-orange">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-info">
+                            <h4>Estimate Earnings</h4>
+                            <div class="stat-value" id="doc-stat-earnings">৳ 0</div>
+                        </div>
+                        <div class="stat-card-icon icon-green">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bookings Panel -->
+                <div class="appointment-history" id="doctor-bookings-panel"
+                    style="border-top: 4px solid var(--bs-primary); margin-top: 0;">
+                    <h3 class="history-title"><i class="fas fa-calendar-check"></i> Incoming Patient Bookings</h3>
+                    <div id="doctor-appointments-list">
+                        <div class="empty-state">No patient bookings found.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: Edit Professional Profile -->
+            <div id="doctor-profile-tab" class="doctor-dashboard-panel-content">
+                <div class="appointment-history" style="border-top: 4px solid var(--bs-primary); margin-top: 0;">
+                    <h3 class="history-title"><i class="fas fa-id-card-alt"></i> Doctor Professional Profile</h3>
+                    <form id="doctor-profile-form" style="margin-top: 1.5rem;" onsubmit="submitDoctorProfile(event)">
+                        <div class="form-grid-responsive">
+                            <input type="hidden" id="doctor-db-id">
+                            <div class="form-group">
+                                <label class="form-label font-weight-bold">Specialist Department</label>
+                                <input type="text" class="form-control" id="doctor-department"
+                                    placeholder="e.g. Cardiology, Neurology" required
+                                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label font-weight-bold">Professional Role / Designation</label>
+                                <input type="text" class="form-control" id="doctor-role"
+                                    placeholder="e.g. Senior Consultant" required
+                                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label font-weight-bold">Qualifications</label>
+                                <input type="text" class="form-control" id="doctor-qualification"
+                                    placeholder="e.g. MBBS, FCPS, MD" required
+                                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label font-weight-bold">Consultation Fee (BDT)</label>
+                                <input type="number" class="form-control" id="doctor-fee" placeholder="e.g. 1000"
+                                    required
+                                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label class="form-label font-weight-bold">Consultation Schedule</label>
+                                <input type="text" class="form-control" id="doctor-schedule"
+                                    placeholder="e.g. Sat - Wed (04:00 PM - 09:00 PM)" required
+                                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label class="form-label font-weight-bold">Biography / About Yourself</label>
+                                <textarea class="form-control" id="doctor-bio" rows="3"
+                                    placeholder="Tell patients about your background, experience, etc." required
+                                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit;"></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="service-btn" style="margin-top: 1.5rem; float: right;">Save
+                            Professional Profile</button>
+                        <div style="clear: both;"></div>
+                    </form>
+                </div>
+            </div>
+
         </div>
 
     </div>
@@ -873,7 +1142,26 @@
 
             if (currentUser.id) {
                 fetchUserProfile(currentUser.id);
-                if (currentUser.role !== 'admin') {
+                if (currentUser.role === 'doctor') {
+                    // Doctor Flow
+                    const historyPanel = document.getElementById('appointment-history-panel');
+                    if (historyPanel) historyPanel.style.display = 'none';
+
+                    const doctorDashboard = document.getElementById('doctor-dashboard-panel');
+                    if (doctorDashboard) doctorDashboard.style.display = 'block';
+
+                    const applyBtn = document.getElementById('apply-doctor-btn');
+                    if (applyBtn) applyBtn.style.display = 'none';
+
+                    fetchDoctorProfileAndAppointments(currentUser.id);
+                } else if (currentUser.role !== 'admin') {
+                    // Patient Flow
+                    const historyPanel = document.getElementById('appointment-history-panel');
+                    if (historyPanel) historyPanel.style.display = 'block';
+
+                    const doctorDashboard = document.getElementById('doctor-dashboard-panel');
+                    if (doctorDashboard) doctorDashboard.style.display = 'none';
+
                     checkDoctorApplicationStatus(currentUser.id);
                     fetchUserAppointments(currentUser.id);
                     checkIfDoctor(currentUser.id);
@@ -988,12 +1276,92 @@
                     const matchedDoc = doctors.find(d => d.userId === userId);
                     if (matchedDoc) {
                         // Display Doctor Dashboard
-                        document.getElementById('doctor-dashboard-container').style.display = 'block';
-                        fetchDoctorDashboard(matchedDoc.id);
+                        const historyPanel = document.getElementById('appointment-history-panel');
+                        if (historyPanel) historyPanel.style.display = 'none';
+
+                        const doctorDashboard = document.getElementById('doctor-dashboard-panel');
+                        if (doctorDashboard) doctorDashboard.style.display = 'block';
+
+                        const applyBtn = document.getElementById('apply-doctor-btn');
+                        if (applyBtn) applyBtn.style.display = 'none';
+
+                        document.getElementById('doctor-db-id').value = matchedDoc.id || matchedDoc._id;
+                        document.getElementById('doctor-department').value = matchedDoc.department || "";
+                        document.getElementById('doctor-role').value = matchedDoc.role || "";
+                        document.getElementById('doctor-qualification').value = matchedDoc.qualification || "";
+                        document.getElementById('doctor-fee').value = parseFloat(matchedDoc.fee) || "";
+                        document.getElementById('doctor-schedule').value = matchedDoc.schedule || "";
+                        document.getElementById('doctor-bio').value = matchedDoc.bio || "";
+
+                        fetchDoctorDashboard(matchedDoc.id || matchedDoc._id);
                     }
                 }
             } catch (err) {
                 console.error(err);
+            }
+        }
+
+        async function fetchDoctorProfileAndAppointments(userId) {
+            try {
+                const response = await fetch(`${PROFILE_API_URL}/doctors`);
+                if (!response.ok) throw new Error('Failed to fetch doctors');
+                const doctors = await response.json();
+
+                const doctorProfile = doctors.find(doc => doc.userId === userId);
+                if (doctorProfile) {
+                    document.getElementById('doctor-db-id').value = doctorProfile.id || doctorProfile._id;
+                    document.getElementById('doctor-department').value = doctorProfile.department || "";
+                    document.getElementById('doctor-role').value = doctorProfile.role || "";
+                    document.getElementById('doctor-qualification').value = doctorProfile.qualification || "";
+                    document.getElementById('doctor-fee').value = parseFloat(doctorProfile.fee) || "";
+                    document.getElementById('doctor-schedule').value = doctorProfile.schedule || "";
+                    document.getElementById('doctor-bio').value = doctorProfile.bio || "";
+
+                    fetchDoctorDashboard(doctorProfile.id || doctorProfile._id);
+                }
+            } catch (err) {
+                console.error('Error fetching doctor details:', err);
+            }
+        }
+
+        async function submitDoctorProfile(event) {
+            event.preventDefault();
+            const doctorId = document.getElementById('doctor-db-id').value;
+            if (!doctorId) {
+                alert("Doctor profile ID not found.");
+                return;
+            }
+
+            const department = document.getElementById('doctor-department').value;
+            const role = document.getElementById('doctor-role').value;
+            const qualification = document.getElementById('doctor-qualification').value;
+            const fee = document.getElementById('doctor-fee').value;
+            const schedule = document.getElementById('doctor-schedule').value;
+            const bio = document.getElementById('doctor-bio').value;
+
+            try {
+                const res = await fetch(`${PROFILE_API_URL}/doctors/${doctorId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        department,
+                        role,
+                        qualification,
+                        fee,
+                        schedule,
+                        bio
+                    })
+                });
+
+                if (res.ok) {
+                    alert("Professional profile details updated successfully!");
+                } else {
+                    const data = await res.json();
+                    alert(data.message || "Failed to update professional profile");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error updating professional details");
             }
         }
 
@@ -1003,6 +1371,19 @@
                 const response = await fetch(`${PROFILE_API_URL}/appointments/doctor/${doctorId}`);
                 if (!response.ok) throw new Error('Failed to fetch doctor appointments');
                 const appointments = await response.json();
+
+                // Calculate Dynamic Stats
+                const totalBookings = appointments.length;
+                const pendingBookings = appointments.filter(app => app.status === 'Pending').length;
+                const approvedBookings = appointments.filter(app => app.status === 'Approved' || app.status === 'Completed');
+
+                // Get fee for earnings calculation
+                const feeValue = parseFloat(document.getElementById('doctor-fee').value) || 0;
+                const estimateEarnings = approvedBookings.length * feeValue;
+
+                document.getElementById('doc-stat-total').textContent = totalBookings;
+                document.getElementById('doc-stat-pending').textContent = pendingBookings;
+                document.getElementById('doc-stat-earnings').textContent = `৳ ${estimateEarnings}`;
 
                 const listContainer = document.getElementById('doctor-appointments-list');
                 if (appointments.length === 0) {
@@ -1089,6 +1470,28 @@
             }
         }
 
+        // Switch Doctor Dashboard View Tabs
+        function switchDoctorTab(tabId) {
+            const tabs = document.querySelectorAll('.doctor-tab-btn');
+            const contents = document.querySelectorAll('.doctor-dashboard-panel-content');
+
+            tabs.forEach(tab => {
+                if (tab.getAttribute('onclick').includes(tabId)) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            contents.forEach(content => {
+                if (content.id === `doctor-${tabId}-tab`) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        }
+
         // Generic Appointment Status Updater
         async function updateAppointmentStatus(id, newStatus) {
             if (!confirm(`Are you sure you want to change status to ${newStatus}?`)) return;
@@ -1105,8 +1508,12 @@
 
                 // Reload lists
                 if (currentUser && currentUser.id) {
-                    fetchUserAppointments(currentUser.id);
-                    checkIfDoctor(currentUser.id);
+                    if (currentUser.role === 'doctor') {
+                        fetchDoctorProfileAndAppointments(currentUser.id);
+                    } else {
+                        fetchUserAppointments(currentUser.id);
+                        checkIfDoctor(currentUser.id);
+                    }
                 }
             } catch (err) {
                 alert(err.message);

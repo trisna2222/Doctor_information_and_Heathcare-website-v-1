@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard - Medicoz</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/admin.css">
+
+    <style>
+        :root {
+            --primary-bg: #f8fafc;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --border-radius-lg: 16px;
+            --border-radius-sm: 8px;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .doctor-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border-radius: var(--border-radius-lg);
+            padding: 1.75rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #f1f3f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-card-info h4 {
+            font-size: 0.85rem;
+            color: #8898a9;
+            text-transform: uppercase;
+            letter-spacing: 0.75px;
+            margin: 0 0 8px 0;
+            font-weight: 600;
+        }
+
+        .stat-card-info .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2b3a4a;
+        }
+
+        .stat-card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .icon-blue {
+            background: #e8f3ff;
+            color: #1c7ed6;
+        }
+
+        .icon-green {
+            background: #ebfbee;
+            color: #2b8a3e;
+        }
+
+        .icon-orange {
+            background: #fff4e6;
+            color: #d9480f;
+        }
+
+        .dashboard-card {
+            background: #ffffff;
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            border: 1px solid #f1f5f9;
+        }
+
+        .card-header-clean {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header-clean h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar-upload-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            border: 2px dashed #cbd5e1;
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            background: #fafbfd;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .avatar-upload-zone:hover {
+            border-color: var(--bs-primary);
+            background: #f1f5f9;
+        }
+
+        .avatar-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e2e8f0;
+        }
+
+        .avatar-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .badge-status {
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-pending {
+            background: #fff9db;
+            color: #f08c00;
+        }
+
+        .badge-approved {
+            background: #ebfbee;
+            color: #2b8a3e;
+        }
+
+        .badge-completed {
+            background: #e7f5ff;
+            color: #1c7ed6;
+        }
+
+        .badge-cancelled {
+            background: #fff5f5;
+            color: #c92a2a;
+        }
+
+        .btn-upload {
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: var(--border-radius-sm);
+            color: #334155;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-upload:hover {
+            border-color: var(--bs-primary);
+            color: var(--bs-primary);
+        }
+
+        .btn-upload input[type="file"] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            outline: none;
+            cursor: inherit;
+            display: block;
+        }
+
+        .review-card {
+            border-bottom: 1px solid #f1f5f9;
+            padding: 1.25rem 0;
+        }
+
+        .review-card:last-child {
+            border-bottom: none;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .ratings-summary {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #fafbfd;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid #f1f5f9;
+        }
+
+        .stars {
+            color: #fcc419;
+            display: flex;
+            gap: 3px;
+        }
+
+        /* Toast Alert styling */
+        .toast-notification {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1e293b;
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius-sm);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-user-md" style="color: var(--bs-primary)"></i>
+                <span>Medicoz Doctor</span>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active tab-btn" data-tab="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard Overview</span>
+                </button>
+                <button class="nav-item tab-btn" data-tab="appointments">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments Mgmt</span>
+                </button>
+                <button class="nav-item tab-btn" data-tab="schedule">
+                    <i class="fas fa-clock"></i>
+                    <span>Schedule Planner</span>
+                </button>
+                <button class="nav-item tab-btn" data-tab="reviews">
+                    <i class="fas fa-star"></i>
+                    <span>Patient Reviews</span>
+                </button>
+                <button class="nav-item tab-btn" data-tab="profile">
+                    <i class="fas fa-cog"></i>
+                    <span>Profile Settings</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="nav-item" onclick="doctorLogout()"
+                    style="background:none; border:none; width:100%; text-align:left; cursor:pointer;">
+                    <i class="fas fa-sign-out-alt" style="color: #e74c3c;"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <h1 id="page-title">Dashboard Overview</h1>
+                <div class="user-profile">
+                    <div class="avatar" id="doctor-avatar-header"
+                        style="overflow: hidden; width: 40px; height: 40px; border-radius: 50%; background:#f1f3f7; display:block;">
+                        <img id="doctor-image-header" src="img/default-doctor.jpg"
+                            style="width:100%; height:100%; object-fit:cover;">
+                    </div>
+                    <span id="doctor-name-header">Loading...</span>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- Dashboard Overview Tab -->
+                <div id="dashboard-tab" class="tab-content active">
+                    <div class="doctor-stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-card-info">
+                                <h4>Total Appointments</h4>
+                                <div class="stat-value" id="stats-total">0</div>
+                            </div>
+                            <div class="stat-card-icon icon-blue">
+                                <i class="fas fa-user-injured"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-info">
+                                <h4>Pending Requests</h4>
+                                <div class="stat-value" id="stats-pending">0</div>
+                            </div>
+                            <div class="stat-card-icon icon-orange">
+                                <i class="fas fa-hourglass-half"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-card-info">
+                                <h4>Total Earnings</h4>
+                                <div class="stat-value" id="stats-earnings">৳ 0</div>
+                            </div>
+                            <div class="stat-card-icon icon-green">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header-clean">
+                            <h3><i class="fas fa-history" style="color:var(--bs-primary)"></i> Today's Queue / Recent
+                                Bookings</h3>
+                        </div>
+                        <div id="recent-bookings-list" class="recent-list">
+                            <div class="empty-state">No appointments found.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appointments Management Tab -->
+                <div id="appointments-tab" class="tab-content" style="display: none;">
+                    <div class="dashboard-card">
+                        <div class="action-bar"
+                            style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                            <div class="search-box" style="flex: 1; max-width: 400px; position: relative;">
+                                <i class="fas fa-search"
+                                    style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #888;"></i>
+                                <input type="text" id="patient-search-input" placeholder="Search patients by name..."
+                                    style="width: 100%; padding: 10px 12px 10px 36px; border: 1px solid #cbd5e1; border-radius: var(--border-radius-sm); outline: none;">
+                            </div>
+                            <div class="filter-box">
+                                <select id="appointment-status-filter"
+                                    style="padding: 10px; border: 1px solid #cbd5e1; border-radius: var(--border-radius-sm); outline: none;">
+                                    <option value="All">All Statuses</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="overflow-x: auto;">
+                            <table class="data-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                                <thead>
+                                    <tr style="border-bottom: 2px solid #e2e8f0;">
+                                        <th style="padding: 12px;">Patient Info</th>
+                                        <th style="padding: 12px;">Appt Date</th>
+                                        <th style="padding: 12px;">Comment Msg</th>
+                                        <th style="padding: 12px;">Payment</th>
+                                        <th style="padding: 12px;">Booking Status</th>
+                                        <th style="padding: 12px;">Medical Report</th>
+                                        <th style="padding: 12px; text-align: right;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="appointments-table-body">
+                                    <!-- Rendered dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule Planner Tab -->
+                <div id="schedule-tab" class="tab-content" style="display: none;">
+                    <div class="dashboard-card">
+                        <div class="card-header-clean">
+                            <h3><i class="fas fa-calendar-alt" style="color:var(--bs-primary)"></i> Consulting Hours
+                                Planner</h3>
+                            <span style="color:#64748b; font-size:0.9rem;">Define when patients can book appointment
+                                sessions</span>
+                        </div>
+                        <form id="schedule-form" onsubmit="submitSchedule(event)">
+                            <div class="form-grid">
+                                <div class="form-group" style="grid-column: span 2;">
+                                    <label class="form-label"
+                                        style="font-weight:600; display:block; margin-bottom:0.5rem;">Regular Consulting
+                                        Timetable</label>
+                                    <input type="text" id="sched-timetable"
+                                        placeholder="e.g. Sat - Wed (04:00 PM - 09:00 PM)" required
+                                        style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: var(--border-radius-sm); outline: none;">
+                                    <span style="color:#888; font-size:0.8rem; display:block; margin-top:4px;">Enter
+                                        details like Saturday to Thursday, 9:00 AM - 5:00 PM.</span>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary"
+                                style="margin-top: 1.5rem; float: right; padding: 10px 24px; border:none; border-radius:4px; font-weight:600; cursor:pointer;">Update
+                                Timetable</button>
+                            <div style="clear:both;"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Patient Feedback Tab -->
+                <div id="reviews-tab" class="tab-content" style="display: none;">
+                    <div class="ratings-summary">
+                        <div style="text-align: center; border-right: 1px solid #e2e8f0; padding-right: 2rem;">
+                            <div style="font-size: 3rem; font-weight: 700; color: #1e293b; line-height: 1;"
+                                id="avg-rating-val">0</div>
+                            <div class="stars" style="justify-content: center; margin: 0.5rem 0;" id="avg-rating-stars">
+                                <!-- Dynamic stars -->
+                            </div>
+                            <div style="font-size: 0.85rem; color: #64748b;" id="total-reviews-count">0 Reviews</div>
+                        </div>
+                        <div>
+                            <h4 style="margin:0 0 0.5rem 0; color:#1e293b;">Rating & Reviews System</h4>
+                            <p style="margin:0; color:#64748b; font-size:0.9rem; max-width: 500px;">Patient testimonies
+                                left on your detail card pages. Feedbacks help you evaluate your consultation responses.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header-clean">
+                            <h3><i class="fas fa-comments" style="color:var(--bs-primary)"></i> Review Entries</h3>
+                        </div>
+                        <div id="reviews-feed" style="max-height: 400px; overflow-y:auto; padding-right: 10px;">
+                            <div class="empty-state">No feedback submitted yet.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Settings Tab -->
+                <div id="profile-tab" class="tab-content" style="display: none;">
+                    <form id="profile-form" onsubmit="submitProfile(event)">
+                        <div class="form-grid">
+                            <!-- Column 1: Image Upload -->
+                            <div class="dashboard-card"
+                                style="display: flex; flex-direction: column; justify-content: center;">
+                                <div class="card-header-clean">
+                                    <h3><i class="fas fa-camera"></i> Profile Image</h3>
+                                </div>
+                                <div class="avatar-upload-zone"
+                                    onclick="document.getElementById('profile-file-input').click()">
+                                    <div class="avatar-circle">
+                                        <img id="profile-avatar-img" src="img/default-doctor.jpg">
+                                    </div>
+                                    <span style="color:#64748b; font-size:0.9rem;"><i
+                                            class="fas fa-cloud-upload-alt"></i> Select New Image</span>
+                                    <input type="file" id="profile-file-input" style="display:none;" accept="image/*"
+                                        onchange="previewProfileImage(event)">
+                                </div>
+                            </div>
+
+                            <!-- Column 2: Personal Stats -->
+                            <div class="dashboard-card">
+                                <div class="card-header-clean">
+                                    <h3><i class="fas fa-user"></i> Professional Identity</h3>
+                                </div>
+                                <div class="form-group" style="margin-bottom:1rem;">
+                                    <label class="form-label"
+                                        style="font-weight:600; display:block; margin-bottom:0.3rem;">Doctor
+                                        Name</label>
+                                    <input type="text" id="prof-name" required
+                                        style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: var(--border-radius-sm); outline:none;">
+                                </div>
+                                <div class="form-group" style="margin-bottom:1rem;">
+                                    <label class="form-label"
+                                        style="font-weight:600; display:block; margin-bottom:0.3rem;">Department
+                                        Specialist</label>
+                                    <input type="text" id="prof-dept" required
+                                        style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: var(--border-radius-sm); outline:none;">
+                                </div>
+                                <div class="form-group" style="margin-bottom:1rem;">
+                                    <label class="form-label"
+                                        style="font-weight:600; display:block; margin-bottom:0.3rem;">Qualifications</label>
+                                    <input type="text" id="prof-qual" required
+                                        style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: var(--border-radius-sm); outline:none;">
+                                </div>
+                                <div class="form-group" style="margin-bottom:1rem;">
+                                    <label class="form-label"
+                                        style="font-weight:600; display:block; margin-bottom:0.3rem;">Designation
+                                        Role</label>
+                                    <input type="text" id="prof-role" required
+                                        style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: var(--border-radius-sm); outline:none;">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label"
+                                        style="font-weight:600; display:block; margin-bottom:0.3rem;">Consultation Fee
+                                        (BDT)</label>
+                                    <input type="number" id="prof-fee" required
+                                        style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: var(--border-radius-sm); outline:none;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Biography block below -->
+                        <div class="dashboard-card">
+                            <div class="card-header-clean">
+                                <h3><i class="fas fa-info-circle"></i> Bio / Narrative Summary</h3>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label"
+                                    style="font-weight:600; display:block; margin-bottom:0.5rem;">Short
+                                    Biography</label>
+                                <textarea id="prof-bio" rows="4"
+                                    placeholder="Brief statement about your training, values, or target operations..."
+                                    required
+                                    style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:var(--border-radius-sm); outline:none; font-family:inherit;"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary"
+                                style="margin-top: 1.5rem; float: right; padding: 10px 24px; border:none; border-radius:4px; font-weight:600; cursor:pointer;">Save
+                                Biography Settings</button>
+                            <div style="clear:both;"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Confirmation Modal Override -->
+    <div id="confirm-modal" class="confirm-modal-overlay"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div class="confirm-modal-box"
+            style="background: #fff; padding: 2rem; border-radius: 12px; max-width: 400px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #eee; text-align: center;">
+            <div id="confirm-modal-icon" style="font-size: 3rem; color: #f0a824; margin-bottom: 1rem;"><i
+                    class="fas fa-question-circle"></i></div>
+            <h3 id="confirm-modal-title" style="margin: 0 0 0.5rem 0; font-size: 1.35rem; color:#222; font-weight:700;">
+                Confirm Action</h3>
+            <p id="confirm-modal-message" style="margin: 0 0 1.5rem 0; color:#555; font-size: 0.95rem;">Are you sure you
+                want to perform this action?</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button id="confirm-modal-cancel"
+                    style="padding: 8px 16px; border-radius: 6px; border: 1px solid #ccc; background: #fff; cursor: pointer; font-weight:600; color:#555;">No,
+                    Cancel</button>
+                <button id="confirm-modal-submit"
+                    style="padding: 8px 16px; border-radius: 6px; border: none; background: var(--bs-primary); color: #fff; cursor: pointer; font-weight:600;">Yes,
+                    Proceed</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Toast Alert System -->
+    <div class="toast-notification" id="toast-notify">
+        <i class="fas fa-info-circle" id="toast-notify-icon"></i>
+        <span id="toast-notify-message">Operation successful!</span>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/doctor-dashboard.js"></script>
+</body>
+
+</html>
