@@ -55,6 +55,10 @@
                     <i class="fas fa-comments"></i>
                     <span>Comment Moderation</span>
                 </button>
+                <button class="nav-item tab-btn" data-tab="profile">
+                    <i class="fas fa-user-cog"></i>
+                    <span>Profile Settings</span>
+                </button>
             </nav>
             <div class="sidebar-footer" style="display:flex; flex-direction:column; gap:5px;">
                 <a href="index.html" target="_blank" class="nav-item">
@@ -297,6 +301,73 @@
                                 <!-- Javascript will populate this -->
                             </tbody>
                         </table>
+                    </div>
+                </div>
+
+                <!-- Profile Settings Tab -->
+                <div id="profile-tab" class="tab-content" style="display: none;">
+                    <div
+                        style="max-width: 600px; margin: 2rem auto; background: #ffffff; padding: 2.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+                        <h3
+                            style="color: #1d2a4d; margin-top: 0; margin-bottom: 2rem; font-weight: 700; border-bottom: 2px solid #edf2f7; padding-bottom: 0.75rem; text-align: left; font-size: 1.35rem;">
+                            <i class="fas fa-user-cog" style="color: #13C5DD; margin-right: 8px;"></i>Admin Profile
+                            Settings
+                        </h3>
+
+                        <form id="admin-profile-form" onsubmit="submitAdminProfile(event)">
+                            <!-- Avatar Uploader -->
+                            <div
+                                style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; gap: 0.75rem;">
+                                <div style="position: relative; width: 120px; height: 120px;">
+                                    <img id="admin-profile-avatar-img" src="img/default-admin.jpg" alt="Admin Avatar"
+                                        style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid #13C5DD; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                                    <label for="admin-profile-file-input"
+                                        style="position: absolute; bottom: 0; right: 0; background: #13C5DD; color: #fff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: background 0.2s;">
+                                        <i class="fas fa-camera" style="font-size: 0.95rem;"></i>
+                                        <input type="file" id="admin-profile-file-input"
+                                            onchange="previewAdminProfileImage(event)" accept="image/*"
+                                            style="display: none;">
+                                    </label>
+                                </div>
+                                <span style="font-size: 0.8rem; color: #64748b; font-weight: 500;">Upload PNG/JPG
+                                    profile image (Max 2MB)</span>
+                            </div>
+
+                            <!-- Email Field (Read Only) -->
+                            <div style="margin-bottom: 1.25rem; text-align: left;">
+                                <label
+                                    style="display: block; font-size: 0.85rem; font-weight: 600; color: #4a5568; margin-bottom: 0.5rem;">Email
+                                    Address (Cannot change)</label>
+                                <input type="email" id="admin-profile-email"
+                                    style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; cursor: not-allowed; outline: none; font-size: 0.95rem; box-sizing: border-box;"
+                                    readonly>
+                            </div>
+
+                            <!-- Role Field (Read Only) -->
+                            <div style="margin-bottom: 1.25rem; text-align: left;">
+                                <label
+                                    style="display: block; font-size: 0.85rem; font-weight: 600; color: #4a5568; margin-bottom: 0.5rem;">Access
+                                    Role</label>
+                                <input type="text" id="admin-profile-role"
+                                    style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; cursor: not-allowed; outline: none; font-size: 0.95rem; box-sizing: border-box;"
+                                    readonly value="Administrator">
+                            </div>
+
+                            <!-- Name Field -->
+                            <div style="margin-bottom: 2rem; text-align: left;">
+                                <label
+                                    style="display: block; font-size: 0.85rem; font-weight: 600; color: #4a5568; margin-bottom: 0.5rem;">Full
+                                    Name</label>
+                                <input type="text" id="admin-profile-name"
+                                    style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; outline: none; box-sizing: border-box; background: #ffffff;"
+                                    required>
+                            </div>
+
+                            <button type="submit"
+                                style="width: 100%; padding: 0.85rem; background: #13C5DD; color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="fas fa-save"></i> Save Profile Settings
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

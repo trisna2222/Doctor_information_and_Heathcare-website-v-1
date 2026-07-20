@@ -9,10 +9,10 @@ function matchesDay(schedule, dayName) {
     if (!schedule) return false;
     const cleanSchedule = schedule.toLowerCase();
     const day = dayName.toLowerCase();
-    
+
     // Direct check (e.g. "mon" is in schedule)
     if (cleanSchedule.includes(day)) return true;
-    
+
     // Range check like "sat - wed" or "sat-wed"
     const daysOrder = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
     const rangeRegex = /(sun|mon|tue|wed|thu|fri|sat)\s*-\s*(sun|mon|tue|wed|thu|fri|sat)/g;
@@ -23,7 +23,7 @@ function matchesDay(schedule, dayName) {
         const startIdx = daysOrder.indexOf(startDay);
         const endIdx = daysOrder.indexOf(endDay);
         const dayIdx = daysOrder.indexOf(day);
-        
+
         if (startIdx !== -1 && endIdx !== -1 && dayIdx !== -1) {
             if (startIdx <= endIdx) {
                 if (dayIdx >= startIdx && dayIdx <= endIdx) return true;
@@ -163,7 +163,7 @@ function applyFiltersAndRender() {
         const gridDiv = document.createElement('div');
         gridDiv.className = 'team-grid';
         gridDiv.style.display = 'grid';
-        gridDiv.style.gridTemplateColumns = 'repeat(auto-fit, minmax(280px, 1fr))';
+        gridDiv.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
         gridDiv.style.gap = '2rem';
 
         deptDoctors.forEach(doc => {
@@ -249,7 +249,7 @@ async function initTeam() {
 
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            
+
             // Update active styling
             alphabetLinks.forEach(l => l.classList.remove('active'));
             link.classList.add('active');

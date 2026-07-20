@@ -13,14 +13,15 @@
         const adminAvatarDiv = document.getElementById('admin-avatar');
 
         if (adminNameSpan) {
-            adminNameSpan.textContent = currentUser.name || 'Admin User';
+            adminNameSpan.textContent = currentUser.name || 'Admin';
         }
 
         if (adminAvatarDiv) {
             if (currentUser.profilePicture) {
-                adminAvatarDiv.innerHTML = `<img src="${currentUser.profilePicture}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                adminAvatarDiv.innerHTML = `<img src="${currentUser.profilePicture}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
             } else {
-                adminAvatarDiv.textContent = (currentUser.name || 'Admin')[0].toUpperCase();
+                const initial = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'A';
+                adminAvatarDiv.textContent = initial;
             }
         }
     });
@@ -69,6 +70,8 @@ tabs.forEach(tab => {
             renderMessages();
         } else if (tab.dataset.tab === 'comments') {
             renderComments();
+        } else if (tab.dataset.tab === 'profile') {
+            loadAdminProfile();
         }
 
         // Update page title
@@ -1445,4 +1448,102 @@ window.adminLogout = function () {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('medicoz_current_user');
     window.location.href = 'login.html';
+};
+
+// Admin Profile Settings Logic
+function loadAdminProfile() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || localStorage.getItem('medicoz_current_user'));
+    if (!currentUser) return;
+
+    const emailInput = document.getElementById('admin-profile-email');
+    const nameInput = document.getElementById('admin-profile-name');
+    const avatarImg = document.getElementById('admin-profile-avatar-img');
+
+    if (emailInput) emailInput.value = currentUser.email || '';
+    if (nameInput) nameInput.value = currentUser.name || '';
+    if (avatarImg) {
+        avatarImg.src = currentUser.profilePicture || 'img/default-admin.jpg';
+    }
+}
+
+window.previewAdminProfileImage = function (event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+        alert("Image file size should be less than 2MB");
+        event.target.value = '';
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        document.getElementById('admin-profile-avatar-img').src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+};
+
+window.submitAdminProfile = async function (event) {
+    event.preventDefault();
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || localStorage.getItem('medicoz_current_user'));
+    if (!currentUser) return;
+
+    const nameInput = document.getElementById('admin-profile-name');
+    const fileInput = document.getElementById('admin-profile-file-input');
+    const name = nameInput.value.trim();
+
+    let base64Image = currentUser.profilePicture || '';
+
+    const submitFn = async () => {
+        try {
+            const response = await fetch(`${USERS_API_BASE}/profile/${currentUser.id || currentUser._id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: name,
+                    email: currentUser.email || 'admin@gmail.com',
+                    profilePicture: base64Image
+                })
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.message || 'Failed to update admin profile');
+            }
+
+            // Sync localStorage
+            currentUser.name = name;
+            currentUser.profilePicture = base64Image;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            localStorage.setItem('medicoz_current_user', JSON.stringify(currentUser));
+
+            // Sync Header elements
+            const adminNameSpan = document.getElementById('admin-name');
+            const adminAvatarDiv = document.getElementById('admin-avatar');
+            if (adminNameSpan) adminNameSpan.textContent = name;
+            if (adminAvatarDiv && base64Image) {
+                adminAvatarDiv.innerHTML = `<img src="${base64Image}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            }
+
+            alert('Admin Profile updated successfully!');
+        } catch (err) {
+            alert(err.message);
+        }
+    };
+
+    if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        if (file.size > 2 * 1024 * 1024) {
+            alert("Image file size should be less than 2MB");
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = async function (e) {
+            base64Image = e.target.result;
+            await submitFn();
+        };
+        reader.readAsDataURL(file);
+    } else {
+        await submitFn();
+    }
 };
